@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Détails du Produit
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Détails du Produit : {{ produit.nom }}</h2>
+
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    {% if produit.imageUrl %}
+                        <img src="{{ asset(produit.imageUrl) }}" alt="{{ produit.nom }}" class="img-fluid rounded-start">
+                    {% else %}
+                        <img src="{{ asset('assets/images/default.png') }}" alt="Pas d'image disponible" class="img-fluid rounded-start">
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ produit.nom }}</h5>
+                        <p class="card-text"><strong>Description :</strong> {{ produit.description }}</p>
+                        <p class="card-text"><strong>Prix :</strong> {{ produit.prix }} €</p>
+                        <p class="card-text "><strong>Auteur :</strong> {{ produit.auteur }}</p>
+                        <p class="card-text"><strong>Quantité disponible :</strong> {{ produit.quantite }}</p>
+                        <p class="card-text"><strong>État :</strong> {{ produit.etat }}</p>
+
+                        {% if produit.categorie %}
+                            <p class="card-text"><strong>Catégorie :</strong> {{ produit.categorie.nom }}</p>
+                        {% else %}
+                            <p class="card-text"><strong>Catégorie :</strong> Non définie</p>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="{{ path('produit_liste') }}" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+{% endblock %}

@@ -1,17 +1,62 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Welcome!{% endblock %}</title>
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{{ asset('assets/css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/vendor.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/icomoon/icomoon.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
+    {% block stylesheets %}
+    {% endblock %}
+</head>
+<body>
+
+{% include 'partials/_navbar.html.twig' %}
+
+<main class="container mt-5">
+
+    {% for label, messages in app.flashes %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show mt-2" role="alert">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% block body %}{% endblock %}
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+<script src="{{ asset('assets/js/jquery-1.11.0.min.js') }}"></script>
+<script src="{{ asset('assets/js/modernizr.js') }}"></script>
+<script src="{{ asset('assets/js/plugins.js') }}"></script>
+<script src="{{ asset('assets/js/script.js') }}"></script>
+<script src="{{ asset('assets/js/slideNav.js') }}"></script>
+
+{% block javascripts %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                let alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    alert.classList.add('fade');
+                    setTimeout(() => alert.remove(), 500);
+                });
+            }, 2000);
+        });
+    </script>
+
+
+
+{% endblock %}
+</body>
 </html>

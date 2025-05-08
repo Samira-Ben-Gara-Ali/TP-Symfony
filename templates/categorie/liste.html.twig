@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Liste des Catégories
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Liste Des Catégories</h2>
+        {% include 'categorie/_search_form.html.twig' %}
+        <div class="row">
+            {% if categories is empty %}
+                <p>Aucune catégorie trouvée.</p>
+            {% else %}
+                {% for categorie in categories %}
+                    <div class="col-md-5 mb-4">
+                        <div class="card h-100 shadow-sm" style="min-height: 300px;">
+                            <div class="card-body text-center" style="padding: 20px;">
+                                <h5 class="card-title mb-3">{{ categorie.nom }}</h5>
+                                <p class="card-text">{{ categorie.description }}</p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-around gap-2">
+                                <a href="{{ path('categorie_new', {'categorie': categorie.id}) }}" class="btn btn-warning flex-fill rounded">MODIFIER</a>
+                                <a href="{{ path('categorie_produits', {'categorie': categorie.id}) }}" class="btn btn-secondary flex-fill rounded">VOIR LES PRODUITS</a>
+                                <a href="{{ path('categorie_supprimer', {'categorie': categorie.id}) }}" class="btn btn-danger flex-fill rounded">SUPPRIMER</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(categories) }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Liste des Produits
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Liste Des Produits</h2>
+
+        {% include 'produit/_search_form.html.twig' %}
+
+        <div class="row">
+            {% if produits is empty %}
+                <p>Aucun produit ne correspond aux critères de recherche.</p>
+            {% else %}
+                {% for produit in produits %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            {% if produit.imageUrl %}
+                                <img src="{{ asset(produit.imageUrl) }}" alt="{{ produit.nom }}" class="card-img-top" style="height: 250px; object-fit: cover;">
+                            {% else %}
+                                <img src="{{ asset('assets/images/default.png') }}" alt="Pas d'image" class="card-img-top" style="height: 250px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title text-center">{{ produit.nom }}</h5>
+                                <p class="card-text text-center"><strong>Prix :</strong> {{ produit.prix }} €</p>
+                                <p class="card-text text-center"><strong>État :</strong> {{ produit.etat }}</p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-center gap-2">
+                                <a href="{{ path('produit_details', {'produit': produit.id}) }}" class="btn btn-primary btn-sm rounded">DÉTAILS</a>
+                                <a href="{{ path('produit_new', {'produit': produit.id}) }}" class="btn btn-warning btn-sm rounded">MODIFIER</a>
+                                <a href="{{ path('produit_supprimer', {'produit': produit.id}) }}" class="btn btn-danger btn-sm rounded">SUPPRIMER</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(produits) }}
+        </div>
+    </div>
+{% endblock %}

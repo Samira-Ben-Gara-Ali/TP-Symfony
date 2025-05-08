@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Accueil
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Bienvenue sur Booksaw!</h1>
+            <hr class="my-4">
+            <p>Découvrez nos produits dès maintenant.</p>
+            <a class="btn btn-primary btn-lg" href="{{ path('produit_liste') }}" role="button">Voir les Produits</a>
+
+        </div>
+    </div>
+{% endblock %}
