@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block body %}
+<h1>
+    Mon Panier
+</h1>
+    {% if articles | length >0 %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix unitaire</th>
+                <th>Quantité</th>
+                <th>Sous-total</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for article in articles %}
+                <tr>
+                    <td>{{ article.produit.nom }}</td>
+                    <td>{{ article.produit.prix|number_format(2) }} €</td>
+                    <td>
+                        <form action="{{ path('panier_mettre_a_jour', {'id': article.produit.id}) }}" method="post" style="display: inline;">
+                            <input type="number" name="quantite" value="{{ article.quantite }}" min="1">
+                            <button type="submit" class="btn btn-sm btn-primary">Mettre à jour</button>
+                        </form>
+                    </td>
+                    <td>{{ (article.produit.prix * article.quantite)|number_format(2) }} €</td>
+                    <td>
+                        <form action="{{ path('panier_supprimer', {'id': article.produit.id}) }}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <h3>Total : {{ total|number_format(2) }} €</h3>
+
+        <a href="{{ path('commande_finaliser') }}" class="btn btn-success">Passer la commande</a>
+    {% else %}
+        <p>Votre panier est vide.</p>
+    {% endif %}
+    <a href="{{ path('produit_liste') }}" class="btn btn-primary">Continuer mes achats</a>
+{% endblock %}

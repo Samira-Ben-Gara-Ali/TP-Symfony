@@ -31,6 +31,7 @@
                                 <a href="{{ path('produit_details', {'produit': produit.id}) }}" class="btn btn-primary btn-sm rounded">DÉTAILS</a>
                                 <a href="{{ path('produit_new', {'produit': produit.id}) }}" class="btn btn-warning btn-sm rounded">MODIFIER</a>
                                 <a href="{{ path('produit_supprimer', {'produit': produit.id}) }}" class="btn btn-danger btn-sm rounded">SUPPRIMER</a>
+                                <a href="{{ path('panier_ajouter', {'id': produit.id})  }}" class="btn btn-primary btn-sm rounded">Ajouter au panier</a>
                             </div>
                         </div>
                     </div>

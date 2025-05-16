@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la commande #{{ commande.id }}{% endblock %}
+
+{% block body %}
+    <h1>Détails de la commande #{{ commande.id }}</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <p>Date : {{ commande.dateCommande|date('d/m/Y H:i') }}</p>
+    <p>Total : {{ commande.total|number_format(2) }} €</p>
+
+    <h3>Articles commandés :</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Prix unitaire</th>
+            <th>Sous-total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for article in commande.articles %}
+            <tr>
+                <td>{{ article.produit.nom }}</td>
+                <td>{{ article.quantite }}</td>
+                <td>{{ article.prixUnitaire|number_format(2) }} €</td>
+                <td>{{ (article.prixUnitaire * article.quantite)|number_format(2) }} €</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('commande_liste') }}" class="btn btn-primary">Retour à la liste</a>
+
+{% endblock %}
+
+

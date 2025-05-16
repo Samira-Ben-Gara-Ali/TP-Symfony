@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Commandes{% endblock %}
+
+{% block body %}
+    <h1>Mes Commandes</h1>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% if commandes is empty %}
+        <p>Vous n'avez aucune commande en cours.</p>
+    {% else %}
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Numéro</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Détails</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for commande in commandes %}
+                <tr>
+                    <td>#{{ commande.id }}</td>
+                    <td>{{ commande.dateCommande|date('d/m/Y H:i') }}</td>
+                    <td>{{ commande.total|number_format(2) }} €</td>
+                    <td>
+                        <a href="{{ path('commande_details', {'id': commande.id}) }}" class="btn btn-info btn-sm">Voir</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <a href="{{ path('produit_liste') }}" class="btn btn-primary">Retour aux produits</a>
+{% endblock %}
+
+

@@ -37,6 +37,11 @@
             </div>
         </div>
 
+        <form action="{{ path('panier_ajouter', {'id': produit.id}) }}" method="post">
+            <label for="quantite">Quantité :</label>
+            <input type="number" name="quantite" value="1" min="1">
+            <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+        </form>
         <a href="{{ path('produit_liste') }}" class="btn btn-secondary">Retour à la liste</a>
     </div>
 {% endblock %}
