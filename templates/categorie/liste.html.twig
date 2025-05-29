@@ -8,27 +8,30 @@
     <div class="container mt-5">
         <h2 class="mb-4">Liste Des Catégories</h2>
         {% include 'categorie/_search_form.html.twig' %}
-        <div class="row">
-            {% if categories is empty %}
-                <p>Aucune catégorie trouvée.</p>
+        <table class="table">
+            <tr>
+                <th>Nom de la catégorie</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+            {% for categorie in categories %}
+                <tr>
+                    <td>{{ categorie.nom }}</td>
+                    <td>{{ categorie.description }}</td>
+                    <td>
+                        <a href="{{ path('categorie_produits', {'categorie': categorie.id}) }}" >Voir les produits</a> |
+                        <a href="{{ path('categorie_new', {'categorie': categorie.id}) }}" class="text-warning">Modifier</a> |
+                        <a href="{{ path('categorie_supprimer', {'categorie': categorie.id}) }}" class="text-danger">Supprimer</a>
+                    </td>
+                </tr>
             {% else %}
-                {% for categorie in categories %}
-                    <div class="col-md-5 mb-4">
-                        <div class="card h-100 shadow-sm" style="min-height: 300px;">
-                            <div class="card-body text-center" style="padding: 20px;">
-                                <h5 class="card-title mb-3">{{ categorie.nom }}</h5>
-                                <p class="card-text">{{ categorie.description }}</p>
-                            </div>
-                            <div class="card-footer d-flex justify-content-around gap-2">
-                                <a href="{{ path('categorie_new', {'categorie': categorie.id}) }}" class="btn btn-warning flex-fill rounded">MODIFIER</a>
-                                <a href="{{ path('categorie_produits', {'categorie': categorie.id}) }}" class="btn btn-secondary flex-fill rounded">VOIR LES PRODUITS</a>
-                                <a href="{{ path('categorie_supprimer', {'categorie': categorie.id}) }}" class="btn btn-danger flex-fill rounded">SUPPRIMER</a>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div>
+                <p>Aucune catégorie à afficher pour l'instant</p>
+            {% endfor %}
+        </table>
+        <br>
+
+        <a class="btn btn-primary btn-sm rounded" href="{{ path('categorie_new') }}">Ajouter une categorie</a>
+
         <div class="d-flex justify-content-center mt-4">
             {{ knp_pagination_render(categories) }}
         </div>
