@@ -1,15 +1,24 @@
 <div class="container">
     <div class="row">
         <div class="col-md-6">
-
-            <div class="d-flex align-items-center gap-3 mb-4">
-                <h2 class="mb-0">Liste Des Produits</h2>
-                <button class="btn btn-dark mb-3 d-flex align-items-center rounded-pill" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel">
-                    <i class="bi bi-sliders me-2"></i> Filtres
-                </button>
-
+            <div class="mb-4">
+                <h2 class="mb-2">Liste Des Produits</h2>
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link d-flex align-items-center text-dark p-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel">
+                        <i class="bi bi-sliders me-2"></i> Filtres
+                    </button>
+                    <form method="get" class="m-0">
+                        <select name="sort"
+                                class="form-select form-select-sm d-inline-block w-auto"
+                                style="height: 36px; margin-top: 8px;"
+                                onchange="this.form.submit()">
+                            <option value="">Trier par</option>
+                            <option value="asc" {% if app.request.get('sort') == 'asc' %}selected{% endif %}>Prix croissant</option>
+                            <option value="desc" {% if app.request.get('sort') == 'desc' %}selected{% endif %}>Prix décroissant</option>
+                        </select>
+                    </form>
+                </div>
             </div>
-
 
             <div class="collapse" id="filterPanel">
                 <form method="get" action="{{ path('produit_liste') }}">

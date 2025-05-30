@@ -25,12 +25,16 @@ final class ProduitController extends AbstractController
         $repository = $doctrine->getRepository(Produit::class);
         $categorieRepository = $doctrine->getRepository(Categorie::class);
         $categories = $categorieRepository->findAll();
+
         $search = $request->query->get('search');
         $minPrice = $request->query->get('minPrice');
         $maxPrice = $request->query->get('maxPrice');
         $auteur = $request->query->get('auteur');
         $categorieId = $request->query->get('categorie');
+        $sort = $request->query->get('sort');
+
         $queryBuilder = $repository->createQueryBuilder('p');
+
         if ($search) {
             $queryBuilder->andWhere('p.nom LIKE :search')
                 ->setParameter('search', '%' . $search . '%');
@@ -48,17 +52,28 @@ final class ProduitController extends AbstractController
 
         if ($auteur) {
             $queryBuilder->andWhere('p.auteur LIKE :auteur')
-                ->setParameter('auteur', '%' . $auteur . '%');}
+                ->setParameter('auteur', '%' . $auteur . '%');
+        }
 
         if ($categorieId) {
             $queryBuilder->andWhere('p.categorie = :categorie')
                 ->setParameter('categorie', $categorieId);
         }
 
+        if ($sort === 'asc') {
+            $queryBuilder->orderBy('p.prix', 'ASC');
+        } elseif ($sort === 'desc') {
+            $queryBuilder->orderBy('p.prix', 'DESC');
+        }
+
         $produits = $paginator->paginate(
-            $queryBuilder->getQuery(),
+            $queryBuilder,
             $request->query->getInt('page', 1),
-            6
+            6,
+            [
+                'sortFieldParameterName' => null,
+                'sortDirectionParameterName' => null
+            ]
         );
 
         return $this->render('produit/liste.html.twig', [
@@ -66,9 +81,6 @@ final class ProduitController extends AbstractController
             'categories' => $categories,
         ]);
     }
-
-
-
 
 
 #[Route('/new/{produit?}', name: 'produit_new')]
