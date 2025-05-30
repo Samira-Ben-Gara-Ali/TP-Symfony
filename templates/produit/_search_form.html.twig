@@ -1,39 +1,75 @@
-<form method="get" action="{{ path('produit_liste') }}" class="form-row align-items-center mb-4">
-    <div class="row g-2 mb-3">
-        <div class="col">
-            <input type="text" name="search" class="form-control" placeholder="Nom du produit" value="{{ app.request.get('search') }}">
-        </div>
-        <div class="col">
-            <input type="text" name="auteur" class="form-control" placeholder="Auteur" value="{{ app.request.get('auteur') }}">
-        </div>
-        <div class="col">
-            <input type="number" name="minPrice" class="form-control" placeholder="Prix min" value="{{ app.request.get('minPrice') }}">
-        </div>
-        <div class="col">
-            <input type="number" name="maxPrice" class="form-control" placeholder="Prix max" value="{{ app.request.get('maxPrice') }}">
-        </div>
-        <div class="col">
-            <select name="etat" class="form-select">
-                <option value="">État</option>
-                <option value="disponible" {% if app.request.get('etat') == 'disponible' %}selected{% endif %}>Disponible</option>
-                <option value="indisponible" {% if app.request.get('etat') == 'indisponible' %}selected{% endif %}>Indisponible</option>
-            </select>
-        </div>
-        <div class="col">
-            <select name="categorie" class="form-select">
-                <option value="">Toutes les catégories</option>
-                {% for categorie in categories %}
-                    <option value="{{ categorie.id }}" {% if app.request.get('categorie') == categorie.id %}selected{% endif %}>{{ categorie.nom }}</option>
-                {% endfor %}
-            </select>
-        </div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <h2 class="mb-0">Liste Des Produits</h2>
+                <button class="btn btn-dark mb-3 d-flex align-items-center rounded-pill" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel">
+                    <i class="bi bi-sliders me-2"></i> Filtres
+                </button>
+
+            </div>
 
 
+            <div class="collapse" id="filterPanel">
+                <form method="get" action="{{ path('produit_liste') }}">
+                    <div class="accordion" id="accordionFilters">
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingCategorie">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCategorie">
+                                    CATÉGORIE
+                                </button>
+                            </h2>
+                            <div id="collapseCategorie" class="accordion-collapse collapse" data-bs-parent="#accordionFilters">
+                                <div class="accordion-body">
+                                    <select name="categorie" class="form-select">
+                                        <option value="">Toutes</option>
+                                        {% for cat in categories %}
+                                            <option value="{{ cat.id }}" {% if app.request.get('categorie') == cat.id %}selected{% endif %}>
+                                                {{ cat.nom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePrix">
+                                    PRIX
+                                </button>
+                            </h2>
+                            <div id="collapsePrix" class="accordion-collapse collapse" data-bs-parent="#accordionFilters">
+                                <div class="accordion-body d-flex gap-2">
+                                    <input type="number" name="minPrice" class="form-control" placeholder="Min" value="{{ app.request.get('minPrice') }}">
+                                    <input type="number" name="maxPrice" class="form-control" placeholder="Max" value="{{ app.request.get('maxPrice') }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAuteur">
+                                    AUTEUR
+                                </button>
+                            </h2>
+                            <div id="collapseAuteur" class="accordion-collapse collapse" data-bs-parent="#accordionFilters">
+                                <div class="accordion-body">
+                                    <input type="text" name="auteur" class="form-control" placeholder="Nom de l’auteur" value="{{ app.request.get('auteur') }}">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-dark rounded-pill">Appliquer les filtres</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
     </div>
-
-    <div class="row justify-content-center">
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary rounded">RECHERCHER</button>
-        </div>
-    </div>
-</form>
+</div>

@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Liste des Produits (Administration)
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Liste Des Produits</h2>
+            <a class="btn btn-outline-secondary rounded" href="{{ path('produit_new') }}">
+                <i class="bi bi-plus-circle"></i> Ajouter un produit
+            </a>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <table class="table table-hover" style="background-color: rgb(243, 242, 236);">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Auteur</th>
+                        <th>Prix (€)</th>
+                        <th>Quantité</th>
+                        <th>État</th>
+                        <th>Catégorie</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for produit in produits %}
+                        <tr>
+                            <td>{{ produit.nom }}</td>
+                            <td>{{ produit.auteur }}</td>
+                            <td>{{ produit.prix }}</td>
+                            <td>{{ produit.quantite }}</td>
+                            <td>{{ produit.etat }}</td>
+                            <td>{{ produit.categorie ? produit.categorie.nom : 'Non définie' }}</td>
+                            <td>
+                                <a href="{{ path('produit_details', {'produit': produit.id}) }}" >Voir</a> |
+                                <a href="{{ path('produit_new', {'produit': produit.id}) }}" class="text-warning">Modifier</a> |
+                                <a href="{{ path('produit_supprimer', {'produit': produit.id}) }}"
+                                   onclick="return confirm('Supprimer ce produit ?')"
+                                   class="text-danger">Supprimer</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="7">Aucun produit à afficher.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(produits) }}
+        </div>
+    </div>
+{% endblock %}

@@ -6,33 +6,33 @@
 
 {% block body %}
     <div class="container mt-5">
-        <h2 class="mb-4">Liste Des Produits</h2>
 
-        {% include 'produit/_search_form.html.twig' %}
+        {% include 'produit/_search_form.html.twig' with {'categories': categories} %}
 
         <div class="row">
             {% if produits is empty %}
                 <p>Aucun produit ne correspond aux critères de recherche.</p>
             {% else %}
                 {% for produit in produits %}
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 shadow-sm">
-                            {% if produit.imageUrl %}
-                                <img src="{{ asset(produit.imageUrl) }}" alt="{{ produit.nom }}" class="card-img-top" style="height: 250px; object-fit: cover;">
-                            {% else %}
-                                <img src="{{ asset('assets/images/default.png') }}" alt="Pas d'image" class="card-img-top" style="height: 250px; object-fit: cover;">
-                            {% endif %}
-                            <div class="card-body">
-                                <h5 class="card-title text-center">{{ produit.nom }}</h5>
-                                <p class="card-text text-center"><strong>Prix :</strong> {{ produit.prix }} €</p>
-                                <p class="card-text text-center"><strong>État :</strong> {{ produit.etat }}</p>
-                            </div>
-                            <div class="card-footer d-flex justify-content-center gap-2">
-                                <a href="{{ path('produit_details', {'produit': produit.id}) }}" class="btn btn-primary btn-sm rounded">DÉTAILS</a>
-                                <a href="{{ path('produit_new', {'produit': produit.id}) }}" class="btn btn-warning btn-sm rounded">MODIFIER</a>
-                                <a href="{{ path('produit_supprimer', {'produit': produit.id}) }}" class="btn btn-danger btn-sm rounded">SUPPRIMER</a>
-                                <a href="{{ path('panier_ajouter', {'id': produit.id})  }}" class="btn btn-primary btn-sm rounded">Ajouter au panier</a>
-                            </div>
+                    <div class="col-md-3">
+                        <div class="product-item">
+                            <figure class="product-style">
+                                <a href="{{ path('produit_details', {'produit': produit.id}) }}">
+
+                                {% if produit.imageUrl %}
+                                    <img src="{{ asset(produit.imageUrl) }}" alt="Books" class="product-item" >
+                                {% else %}
+                                    <img src="{{ asset('assets/images/default.png') }}" alt="Pas d'image" class="product-item">
+                                {% endif %}
+                                </a>
+                                <button href="{{ path('panier_ajouter', {'id': produit.id})  }}" type="button" class="add-to-cart" data-product-tile="add-to-cart">Ajouter au panier</button>
+                            </figure>
+                                <figcaption>
+                                    <h3>{{ produit.nom }}</h3>
+                                    <span>{{ produit.auteur }}</span>
+                                    <div class="item-price">{{ produit.prix }}</div>
+                                </figcaption>
+
                         </div>
                     </div>
                 {% endfor %}
