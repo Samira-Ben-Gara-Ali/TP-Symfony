@@ -22,6 +22,38 @@
 		<link rel="stylesheet" type="text/css" href="{{ asset('assets/icomoon/icomoon.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendor.css') }}">
 		<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+		<style>
+			.search-form {
+				max-width: 500px;
+				margin: 0 auto;
+			}
+			.cart-preview {
+				position: relative;
+			}
+			.cart-count {
+				position: absolute;
+				top: -8px;
+				right: -8px;
+				background: #dc3545;
+				color: white;
+				border-radius: 50%;
+				padding: 2px 6px;
+				font-size: 12px;
+			}
+			/* Footer styles */
+			footer a.text-white-50:hover {
+				color: var(--bs-primary) !important;
+				transition: color 0.3s ease;
+			}
+			footer .hover-primary:hover {
+				color: var(--bs-primary) !important;
+				transform: translateY(-2px);
+				transition: all 0.3s ease;
+			}
+			footer .badge {
+				font-size: 0.75rem;
+			}
+		</style>
 	</head>
 
 	<body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
@@ -111,10 +143,10 @@
 											<li class="menu-item has-sub">
 												<a href="#admin" class="nav-link">Administration</a>
 												<ul>
-													<li><ahref="{{ path('produit_admin_liste') }}">Liste des produits</a></li>
-													<li><ahref="{{ path('categorie_liste') }}">Liste des catégories</a></li>
-													<li><ahref="{{ path('produit_new') }}">Ajouter un produit</a></li>
-													<li><ahref="{{ path('categorie_new') }}">Ajouter une catégorie</a></li>
+													<li><ahref="{{path('produit_admin_liste')}}">Liste des produits</a></li>
+													<li><ahref="{{path('categorie_liste')}}">Liste des catégories</a></li>
+													<li><ahref="{{path('produit_new')}}">Ajouter un produit</a></li>
+													<li><ahref="{{path('categorie_new')}}">Ajouter une catégorie</a></li>
 												</ul>
 											</li>
 										{% endif %}
@@ -153,15 +185,155 @@
 			</main>
 
 
-			<footer id="footer">
+			<!-- Footer -->
+			<footer class="bg-dark text-white py-5 mt-5">
 				<div class="container">
-					<div class="row">
-						<div class="col-md-8">
-							<div class="footer-item">
-								<div class="company-brand">
-									<h4 class="fw-bold">BOOKSAW</h4>
-									<p class="text-muted">Votre librairie en ligne de confiance.</p>
+					<div
+						class="row g-4">
+						<!-- À propos -->
+						<div class="col-lg-3 col-md-6">
+							<h5 class="mb-3">BookSaw</h5>
+							<p class="mb-3">Votre librairie en ligne de confiance depuis 2024. Des milliers de livres soigneusement sélectionnés pour tous les goûts.</p>
+							<div class="d-flex gap-3">
+								<a href="#" class="text-white-50 hover-primary">
+									<i class="bi bi-facebook fs-5"></i>
+								</a>
+								<a href="#" class="text-white-50 hover-primary">
+									<i class="bi bi-twitter fs-5"></i>
+								</a>
+								<a href="#" class="text-white-50 hover-primary">
+									<i class="bi bi-instagram fs-5"></i>
+								</a>
+								<a href="#" class="text-white-50 hover-primary">
+									<i class="bi bi-linkedin fs-5"></i>
+								</a>
+							</div>
+						</div>
+
+						<!-- Liens rapides -->
+						<div class="col-lg-2 col-md-6">
+							<h5 class="mb-3">Navigation</h5>
+							<ul class="list-unstyled">
+								<li class="mb-2">
+									<a href="{{ path('home') }}" class="text-white-50 text-decoration-none">Accueil</a>
+								</li>
+								<li class="mb-2">
+									<a href="{{ path('produit_liste') }}" class="text-white-50 text-decoration-none">Tous les livres</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Nouveautés</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Meilleures ventes</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Promotions</a>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Service client -->
+						<div class="col-lg-2 col-md-6">
+							<h5 class="mb-3">Service Client</h5>
+							<ul class="list-unstyled">
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Nous contacter</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">FAQ</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Livraison</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Retours</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Suivi commande</a>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Informations légales -->
+						<div class="col-lg-2 col-md-6">
+							<h5 class="mb-3">Informations</h5>
+							<ul class="list-unstyled">
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">À propos</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Mentions légales</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">CGV</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Confidentialité</a>
+								</li>
+								<li class="mb-2">
+									<a href="#" class="text-white-50 text-decoration-none">Cookies</a>
+								</li>
+							</ul>
+						</div>
+
+						<!-- Contact et Newsletter -->
+						<div class="col-lg-3 col-md-6">
+							<h5 class="mb-3">Contact</h5>
+							<div class="mb-3">
+								<p class="mb-1">
+									<i class="bi bi-geo-alt me-2"></i>INSAT Centre Urbain Nord</p>
+								<p class="mb-1">Tunis, Tunisie</p>
+								<p class="mb-1">
+									<i class="bi bi-telephone me-2"></i>+216 71 123 456</p>
+								<p class="mb-3">
+									<i class="bi bi-envelope me-2"></i>contact@booksaw.tn</p>
+							</div>
+
+							<h6 class="mb-2">Newsletter</h6>
+							<p class="small mb-2">Recevez nos dernières nouveautés</p>
+							<form class="d-flex">
+								<input type="email" class="form-control form-control-sm me-2" placeholder="Email">
+								<button class="btn btn-primary btn-sm" type="submit">OK</button>
+							</form>
+						</div>
+					</div>
+
+					<hr
+					class="my-4 border-secondary">
+
+					<!-- Section inférieure -->
+					<div class="row align-items-center">
+						<div class="col-md-6">
+							<p class="mb-2">&copy;
+								{{ "now"|date("Y") }}
+								BookSaw. Tous droits réservés.</p>
+							<div class="d-flex align-items-center gap-3">
+								<span class="small">Paiement sécurisé :</span>
+								<div class="d-flex gap-2">
+									<span class="badge bg-light text-dark px-2 py-1">
+										<i class="bi bi-credit-card"></i>
+										Stripe
+									</span>
+									<span class="badge bg-light text-dark px-2 py-1">
+										<i class="bi bi-shield-check"></i>
+										SSL
+									</span>
 								</div>
+							</div>
+						</div>
+						<div class="col-md-6 text-md-end">
+							<div class="mb-2">
+								<span class="small">Livraison gratuite dès 50€</span>
+							</div>
+							<div class="d-flex justify-content-md-end gap-2">
+								<span class="badge bg-success">
+									<i class="bi bi-truck"></i>
+									Livraison 24h
+								</span>
+								<span class="badge bg-info">
+									<i class="bi bi-arrow-clockwise"></i>
+									Retour 30j
+								</span>
 							</div>
 						</div>
 					</div>
