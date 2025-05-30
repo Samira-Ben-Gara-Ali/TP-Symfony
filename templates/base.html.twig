@@ -1,166 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <title>{% block title %}BookSaw{% endblock %}</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="author" content="">
-    <meta name="keywords" content="">
-    <meta name="description" content="">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+	<head>
+		<title>
+			{% block title %}BookSaw
+			{% endblock %}
+		</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="author" content="">
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/normalize.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/icomoon/icomoon.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendor.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
-</head>
+		<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/normalize.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ asset('assets/icomoon/icomoon.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/vendor.css') }}">
+		<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+	</head>
 
-<body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
-
-
-
-<div id="header-wrap">
-
-    <div class="top-content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-6">
-
-                </div>
-                <div class="col-md-6">
-                    <nav id="navbar">
-                        <div class="main-menu stellarnav">
-                            <ul class="menu-list">
+	<body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
 
 
-                                    <li class="menu-item has-sub">
-                                        <a href="#" class="nav-link">Account</a>
-                                        <ul >
-                                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                                                <li><a href="{{ path('app_logout') }}"><i class="icon icon-user"></i><span>Logout</span></a></li>
-                                            {% else %}
-                                                <li><a href="{{ path('app_login') }}"><i class="icon icon-user"></i><span>Login</span></a></li>
-                                                <li><a href="{{ path('app_register') }}"><i class="icon icon-user"></i><span>Register</span></a></li>
-                                            {% endif %}
-                                        </ul>
-                                    </li>
-                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+		<div id="header-wrap">
 
-                                <li class="menu-item"><a href="{{path('panier_index') }}" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Panier</span></a></li>
-                                {% endif %}
-                            </ul>
-                            <div class="hamburger">
-                                <span class="bar"></span>
-                                <span class="bar"></span>
-                                <span class="bar"></span>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
-
-            </div>
-        </div>
-    </div><!--top-content-->
-    <header id="header">
-        <div class="container-fluid">
-            <div class="row">
-
-                <div class="col-md-2">
-                    <div class="main-logo">
-                        <a href="{{ path('home') }}"><img src="{{ asset('assets/images/main-logo.png') }}" alt="logo"></a>
-                    </div>
-
-                </div>
-
-                <div class="col-md-10">
-
-                    <nav id="navbar">
-                        <div class="main-menu stellarnav">
-                            <ul class="menu-list">
-                                <li class="menu-item"><a href="{{ path('home') }}">Accueil</a></li>
-                                {% if is_granted('ROLE_ADMIN') %}
-                                    <li class="menu-item has-sub">
-                                        <a href="#admin" class="nav-link">Administration</a>
-                                        <ul>
-                                            <li><a href="{{ path('produit_admin_liste') }}">Liste des produits</a></li>
-                                            <li><a href="{{ path('categorie_liste') }}">Liste des catégories</a></li>
-                                            <li><a href="{{ path('produit_new') }}">Ajouter un produit</a></li>
-                                            <li><a href="{{ path('categorie_new') }}">Ajouter une catégorie</a></li>
-                                        </ul>
-                                    </li>
-                                {% endif %}
-                                <li class="menu-item"><a href="{{path('produit_liste')}}" class="nav-link">Produits</a></li>
-                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                                <li class="menu-item"><a href="{{path('commande_liste')}}" class="nav-link">Mes Commandes</a></li>
-                                {% endif %}
-                            </ul>
-                            <div class="hamburger">
-                                <span class="bar"></span>
-                                <span class="bar"></span>
-                                <span class="bar"></span>
-                            </div>
-                        </div>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </header>
-<main class="container mt-5">
-
-    {% for label, messages in app.flashes %}
-        <div class="alert alert-{{ label }} alert-dismissible fade show mt-2" role="alert">
-            {% for message in messages %}
-                {{ message }}
-            {% endfor %}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
-
-    {% block body %}{% endblock %}
-</main>
+			<div class="top-content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-md-6"></div>
+						<div class="col-md-6">
+							<nav id="navbar">
+								<div class="main-menu stellarnav">
+									<ul class="menu-list">
 
 
-    <footer id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="footer-item">
-                        <div class="company-brand">
-                            <h4 class="fw-bold">BOOKSAW</h4>
-                            <p class="text-muted">Votre librairie en ligne de confiance.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+										<li class="menu-item has-sub">
+											<a href="#" class="nav-link">Account</a>
+											<ul>
+												{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+													<li>
+														<a href="{{ path('app_logout') }}">
+															<i class="icon icon-user"></i>
+															<span>Logout</span>
+														</a>
+													</li>
+												{% else %}
+													<li>
+														<a href="{{ path('app_login') }}">
+															<i class="icon icon-user"></i>
+															<span>Login</span>
+														</a>
+													</li>
+													<li>
+														<a href="{{ path('app_register') }}">
+															<i class="icon icon-user"></i>
+															<span>Register</span>
+														</a>
+													</li>
+												{% endif %}
+											</ul>
+										</li>
+										{% if is_granted('IS_AUTHENTICATED_FULLY') %}
 
-    <script src="{{ asset('assets/js/jquery-1.11.0.min.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-            crossorigin="anonymous"></script>
-    <script src="{{ asset('assets/js/plugins.js') }}"></script>
-    <script src="{{ asset('assets/js/script.js') }}"></script>
-{% block javascripts %}
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            setTimeout(function() {
-                let alerts = document.querySelectorAll('.alert');
-                alerts.forEach(function(alert) {
-                    alert.classList.add('fade');
-                    setTimeout(() => alert.remove(), 500);
-                });
-            }, 2000);
-        });
-    </script>
+											<li class="menu-item">
+												<a href="{{path('panier_index') }}" class="cart for-buy">
+													<i class="icon icon-clipboard"></i>
+													<span>Panier</span>
+												</a>
+											</li>
+										{% endif %}
+									</ul>
+									<div class="hamburger">
+										<span class="bar"></span>
+										<span class="bar"></span>
+										<span class="bar"></span>
+									</div>
+								</div>
+							</nav>
+						</div>
 
-{% endblock %}
-</body>
+					</div>
+				</div>
+			</div>
+			<!--top-content-->
+			<header id="header">
+				<div class="container-fluid">
+					<div class="row">
+
+						<div class="col-md-2">
+							<div class="main-logo">
+								<a href="{{ path('home') }}"><img src="{{ asset('assets/images/main-logo.png') }}" alt="logo"></a>
+							</div>
+
+						</div>
+
+						<div class="col-md-10">
+
+							<nav id="navbar">
+								<div class="main-menu stellarnav">
+									<ul class="menu-list">
+										<li class="menu-item">
+											<a href="{{ path('home') }}">Accueil</a>
+										</li>
+										{% if is_granted('ROLE_ADMIN') %}
+											<li class="menu-item has-sub">
+												<a href="#admin" class="nav-link">Administration</a>
+												<ul>
+													<li><ahref="{{ path('produit_admin_liste') }}">Liste des produits</a></li>
+													<li><ahref="{{ path('categorie_liste') }}">Liste des catégories</a></li>
+													<li><ahref="{{ path('produit_new') }}">Ajouter un produit</a></li>
+													<li><ahref="{{ path('categorie_new') }}">Ajouter une catégorie</a></li>
+												</ul>
+											</li>
+										{% endif %}
+										<li class="menu-item">
+											<a href="{{path('produit_liste')}}" class="nav-link">Produits</a>
+										</li>
+										{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+											<li class="menu-item">
+												<a href="{{path('commande_liste')}}" class="nav-link">Mes Commandes</a>
+											</li>
+										{% endif %}
+									</ul>
+									<div class="hamburger">
+										<span class="bar"></span>
+										<span class="bar"></span>
+										<span class="bar"></span>
+									</div>
+								</div>
+							</nav>
+						</div>
+					</div>
+				</div>
+			</header>
+			<main class="container mt-5">
+
+				{% for label, messages in app.flashes %}
+					<div class="alert alert-{{ label }} alert-dismissible fade show mt-2" role="alert">
+						{% for message in messages %}
+							{{ message }}
+						{% endfor %}
+						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+					</div>
+				{% endfor %}
+
+				{% block body %}{% endblock %}
+			</main>
+
+
+			<footer id="footer">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-8">
+							<div class="footer-item">
+								<div class="company-brand">
+									<h4 class="fw-bold">BOOKSAW</h4>
+									<p class="text-muted">Votre librairie en ligne de confiance.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</footer>
+
+			<script src="{{ asset('assets/js/jquery-1.11.0.min.js') }}"></script>
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+			<script src="{{ asset('assets/js/plugins.js') }}"></script>
+			<script src="{{ asset('assets/js/script.js') }}"></script>
+			{% block javascripts %}
+				<script>
+					document.addEventListener("DOMContentLoaded", function () {
+setTimeout(function () {
+let alerts = document.querySelectorAll('.alert');
+alerts.forEach(function (alert) {
+alert.classList.add('fade');
+setTimeout(() => alert.remove(), 500);
+});
+}, 2000);
+});
+				</script>
+
+			{% endblock %}
+		</body>
+	</body>
 </html>

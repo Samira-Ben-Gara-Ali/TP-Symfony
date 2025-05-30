@@ -21,9 +21,8 @@ final class ProduitController extends AbstractController
 {
 
     #[Route('/liste', name: 'produit_liste')]
-    public function liste(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
+    public function liste(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine, ProduitRepository $repository): Response
     {
-        $repository = $doctrine->getRepository(Produit::class);
         $categorieRepository = $doctrine->getRepository(Categorie::class);
         $categories = $categorieRepository->findAll();
 
@@ -84,22 +83,21 @@ final class ProduitController extends AbstractController
     }
 
 
-#[Route('/new/{produit?}', name: 'produit_new')]
-#[IsGranted('ROLE_ADMIN')]
-    public function new(Request $request, ManagerRegistry $doctrine, Produit $produit=null): Response
+    #[Route('/new/{produit?}', name: 'produit_new')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function new(Request $request, EntityManagerInterface $entityManager, ?Produit $produit = null): Response
     {
-        $isNew=false;
+        $isNew = false;
         if (! $produit) {
             $produit = new Produit();
             $produit->setDateAjout(new \DateTimeImmutable());
-            $isNew=true;
+            $isNew = true;
         }
 
         $form = $this->createForm(ProduitForm::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $doctrine->getManager();
             $entityManager->persist($produit);
             $entityManager->flush();
             $message = $isNew ? 'Produit ajouté avec succès' : 'Produit modifié avec succès';
@@ -114,45 +112,41 @@ final class ProduitController extends AbstractController
     }
 
     #[Route('/details/{produit}', name: 'produit_details')]
-    public function show( SessionInterface $session, ManagerRegistry $doctrine,  Produit $produit=null ): Response
+    public function show(SessionInterface $session, EntityManagerInterface $entityManager, ?Produit $produit = null): Response
     {
 
-        if ($produit){
-            $categorieRepository = $doctrine->getRepository(Categorie::class);
+        if ($produit) {
+            $categorieRepository = $entityManager->getRepository(Categorie::class);
 
             $categories = $categorieRepository->findAll();
-            return $this->render('produit/details.html.twig', ['produit' => $produit, 'categories' => $categories]);}
-        else{
+            return $this->render('produit/details.html.twig', ['produit' => $produit, 'categories' => $categories]);
+        } else {
             $this->addFlash("error", "Produit introuvable");
-            return$this->redirectToRoute('produit_liste');
+            return $this->redirectToRoute('produit_liste');
         }
     }
 
     #[Route('/supprimer/{produit}', name: 'produit_supprimer')]
-    public function supprimer(Request $request, ManagerRegistry $doctrine, Produit $produit=null,): Response
+    public function supprimer(Request $request, EntityManagerInterface $entityManager, ?Produit $produit = null): Response
     {
-        if ($produit){
+        if ($produit) {
             $categorie = $produit->getCategorie();
             if ($categorie) {
                 $categorie->removeProduit($produit);
             }
-            $EntityManager = $doctrine->getManager();
-            $EntityManager->remove($produit);
-            $EntityManager->flush();
+            $entityManager->remove($produit);
+            $entityManager->flush();
             $this->addFlash("success", "Produit supprimé avec succès");
-
-        }
-        else{
+        } else {
             $this->addFlash("error", "Produit introuvable");
-
         }
         return $this->redirectToRoute('produit_liste');
-}
+    }
     #[Route('/admin/liste', name: 'produit_admin_liste')]
     #[IsGranted('ROLE_ADMIN')]
-    public function adminListe(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
+    public function adminListe(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
-        $repository = $doctrine->getRepository(Produit::class);
+        $repository = $entityManager->getRepository(Produit::class);
         $queryBuilder = $repository->createQueryBuilder('p');
 
         $produits = $paginator->paginate(
@@ -165,5 +159,4 @@ final class ProduitController extends AbstractController
             'produits' => $produits
         ]);
     }
-
 }

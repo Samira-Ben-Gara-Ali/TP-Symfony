@@ -16,7 +16,7 @@ class Panier
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'panier')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $utilisateur = null;
 
 

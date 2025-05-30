@@ -281,7 +281,13 @@ a {
 
 /* end of Bootstrap Color Theme */
 
-.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+.container,
+.container-fluid,
+.container-lg,
+.container-md,
+.container-sm,
+.container-xl,
+.container-xxl {
   --bs-gutter-x: 3rem;
 }
 
@@ -1553,19 +1559,19 @@ button {
 /*--- Pattern Overlay
 -----------------------------------------------*/
 .pattern-overlay {
-  background-image: url(images/pattern1.png);
+  background-image: url(../images/pattern1.png);
   background-repeat: no-repeat;
   background-position: top right;
 }
 
 .leaf-pattern-overlay {
-  background-image: url(images/leaf.png);
+  background-image: url(../images/leaf.png);
   background-repeat: no-repeat;
   background-position: bottom left;
 }
 
 .corner-pattern-overlay {
-  background-image: url(images/pattern2.png);
+  background-image: url(../images/pattern2.png);
   background-repeat: no-repeat;
   background-position: top right;
 }
@@ -2200,8 +2206,7 @@ span.prev-price {
 
 /*----- Latest Blog Section
 --------------------------------------------------------------*/
-#latest-blog {
-}
+#latest-blog {}
 
 #latest-blog article.column {
   margin-bottom: 60px;
@@ -2410,6 +2415,7 @@ footer#footer {
   color: #74642F;
   margin: 0;
 }
+
 .product-item figcaption>p {
   margin: 0;
 }

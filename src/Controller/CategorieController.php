@@ -10,7 +10,6 @@ use App\Form\CategorieForm;
 
 use App\Repository\CategorieRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,9 +23,9 @@ final class CategorieController extends AbstractController
 {
     #[Route('/admin/liste', name: 'categorie_liste')]
     #[IsGranted('ROLE_ADMIN')]
-    public function liste(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
+    public function liste(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
     {
-        $repository = $doctrine->getRepository(Categorie::class);
+        $repository = $entityManager->getRepository(Categorie::class);
         $queryBuilder = $repository->createQueryBuilder('c');
         $categories = $paginator->paginate(
             $queryBuilder->getQuery(),
@@ -43,23 +42,23 @@ final class CategorieController extends AbstractController
 
     #[Route('/new/{categorie?}', name: 'categorie_new')]
     #[IsGranted('ROLE_ADMIN')]
-    public function new(Request $request, ManagerRegistry $doctrine, Categorie $categorie =null): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ?Categorie $categorie = null): Response
     {
 
-        $isNew=false;
+        $isNew = false;
         if (! $categorie) {
             $categorie = new Categorie();
-            $isNew=true;
+            $isNew = true;
         }
 
         $form = $this->createForm(CategorieForm::class, $categorie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $doctrine->getManager();
             $entityManager->persist($categorie);
             $entityManager->flush();
-            $message = $isNew ? 'Categorie ajouté avec succès' : 'Categorie modifié avec succès';$this->addFlash('success', $message);
+            $message = $isNew ? 'Categorie ajouté avec succès' : 'Categorie modifié avec succès';
+            $this->addFlash('success', $message);
             return $this->redirectToRoute('categorie_liste');
         }
 
@@ -71,25 +70,22 @@ final class CategorieController extends AbstractController
 
 
     #[Route('/supprimer/{categorie}', name: 'categorie_supprimer')]
-    public function supprimer(Request $request, ManagerRegistry $doctrine, Categorie $categorie=null): Response
+    public function supprimer(Request $request, EntityManagerInterface $entityManager, ?Categorie $categorie = null): Response
     {
-        if ($categorie){
-            $EntityManager = $doctrine->getManager();
-            $EntityManager->remove($categorie);
-            $EntityManager->flush();
+        if ($categorie) {
+            $entityManager->remove($categorie);
+            $entityManager->flush();
             $this->addFlash("success", "Categorie supprimé avec succès");
-
-        }
-        else{
+        } else {
             $this->addFlash("error", "Categorie introuvable");
-
         }
         return $this->redirectToRoute('categorie_liste');
     }
     #[Route('/produits/{categorie}', name: 'categorie_produits')]
-    public function listeProduitsParCategorie(Categorie $categorie, ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response {
-        $produitRepo = $doctrine->getRepository(Produit::class);
-        $categorieRepo = $doctrine->getRepository(Categorie::class);
+    public function listeProduitsParCategorie(Categorie $categorie, EntityManagerInterface $entityManager, PaginatorInterface $paginator, Request $request): Response
+    {
+        $produitRepo = $entityManager->getRepository(Produit::class);
+        $categorieRepo = $entityManager->getRepository(Categorie::class);
 
         $queryBuilder = $produitRepo->createQueryBuilder('p')
             ->andWhere('p.categorie = :cat')
@@ -109,5 +105,4 @@ final class CategorieController extends AbstractController
             'categories' => $categories,
         ]);
     }
-
 }

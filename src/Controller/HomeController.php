@@ -8,6 +8,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class HomeController extends AbstractController
 {
+    #[Route('/', name: 'root')]
+    public function root(): Response
+    {
+        return $this->redirectToRoute('home');
+    }
+
     #[Route('/home', name: 'home')]
     public function index(): Response
     {
