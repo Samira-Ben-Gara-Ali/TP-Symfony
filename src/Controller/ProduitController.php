@@ -20,22 +20,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class ProduitController extends AbstractController
 {
 
-
-
     #[Route('/liste', name: 'produit_liste')]
     public function liste(Request $request, PaginatorInterface $paginator, ManagerRegistry $doctrine): Response
     {
         $repository = $doctrine->getRepository(Produit::class);
         $categorieRepository = $doctrine->getRepository(Categorie::class);
-
         $categories = $categorieRepository->findAll();
 
         $search = $request->query->get('search');
         $minPrice = $request->query->get('minPrice');
         $maxPrice = $request->query->get('maxPrice');
         $auteur = $request->query->get('auteur');
-        $etat = $request->query->get('etat');
         $categorieId = $request->query->get('categorie');
+        $sort = $request->query->get('sort');
 
         $queryBuilder = $repository->createQueryBuilder('p');
 
@@ -54,23 +51,30 @@ final class ProduitController extends AbstractController
                 ->setParameter('maxPrice', $maxPrice);
         }
 
-        if ($etat) {
-            $queryBuilder->andWhere('p.etat = :etat')
-                ->setParameter('etat', $etat);
-        }
         if ($auteur) {
             $queryBuilder->andWhere('p.auteur LIKE :auteur')
-                ->setParameter('auteur', '%' . $auteur . '%');}
+                ->setParameter('auteur', '%' . $auteur . '%');
+        }
 
         if ($categorieId) {
             $queryBuilder->andWhere('p.categorie = :categorie')
                 ->setParameter('categorie', $categorieId);
         }
 
+        if ($sort === 'asc') {
+            $queryBuilder->orderBy('p.prix', 'ASC');
+        } elseif ($sort === 'desc') {
+            $queryBuilder->orderBy('p.prix', 'DESC');
+        }
+
         $produits = $paginator->paginate(
-            $queryBuilder->getQuery(),
+            $queryBuilder,
             $request->query->getInt('page', 1),
-            6
+            6,
+            [
+                'sortFieldParameterName' => null,
+                'sortDirectionParameterName' => null
+            ]
         );
 
         return $this->render('produit/liste.html.twig', [
@@ -78,9 +82,6 @@ final class ProduitController extends AbstractController
             'categories' => $categories,
         ]);
     }
-
-
-
 
 
 #[Route('/new/{produit?}', name: 'produit_new')]
@@ -113,13 +114,17 @@ final class ProduitController extends AbstractController
     }
 
     #[Route('/details/{produit}', name: 'produit_details')]
-    public function show( SessionInterface $session, Produit $produit=null): Response
+    public function show( SessionInterface $session, ManagerRegistry $doctrine,  Produit $produit=null ): Response
     {
+
         if ($produit){
-            return $this->render('produit/details.html.twig', ['produit' => $produit]);}
+            $categorieRepository = $doctrine->getRepository(Categorie::class);
+
+            $categories = $categorieRepository->findAll();
+            return $this->render('produit/details.html.twig', ['produit' => $produit, 'categories' => $categories]);}
         else{
             $this->addFlash("error", "Produit introuvable");
-            return $this->render('produit/liste.html.twig', ['session' => $session]);
+            return$this->redirectToRoute('produit_liste');
         }
     }
 
@@ -142,4 +147,22 @@ final class ProduitController extends AbstractController
 
         }
         return $this->redirectToRoute('produit_liste');
-}}
+}
+    #[Route('/admin/liste', name: 'produit_admin_liste')]
+    public function adminListe(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
+    {
+        $repository = $doctrine->getRepository(Produit::class);
+        $queryBuilder = $repository->createQueryBuilder('p');
+
+        $produits = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            6
+        );
+
+        return $this->render('produit/liste_admin.html.twig', [
+            'produits' => $produits
+        ]);
+    }
+
+}

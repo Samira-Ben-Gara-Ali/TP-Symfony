@@ -22,20 +22,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/categorie')]
 final class CategorieController extends AbstractController
 {
-    #[Route('/liste', name: 'categorie_liste')]
+    #[Route('/admin/liste', name: 'categorie_liste')]
     public function liste(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
     {
         $repository = $doctrine->getRepository(Categorie::class);
-
-        $search = $request->query->get('search');
-
         $queryBuilder = $repository->createQueryBuilder('c');
-
-        if ($search) {
-            $queryBuilder->andWhere('c.nom LIKE :search OR c.description LIKE :search')
-                ->setParameter('search', '%' . $search . '%');
-        }
-
         $categories = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
@@ -95,14 +86,26 @@ final class CategorieController extends AbstractController
         return $this->redirectToRoute('categorie_liste');
     }
     #[Route('/produits/{categorie}', name: 'categorie_produits')]
-    public function listeProduitsParCategorie(Categorie $categorie, ManagerRegistry $doctrine): Response
-    {
-        $repository = $doctrine->getRepository(Produit::class);
-        $produits = $repository->findBy(['categorie' => $categorie]);
+    public function listeProduitsParCategorie(Categorie $categorie, ManagerRegistry $doctrine, PaginatorInterface $paginator, Request $request): Response {
+        $produitRepo = $doctrine->getRepository(Produit::class);
+        $categorieRepo = $doctrine->getRepository(Categorie::class);
 
-        return $this->render('categorie/produits.html.twig', [
+        $queryBuilder = $produitRepo->createQueryBuilder('p')
+            ->andWhere('p.categorie = :cat')
+            ->setParameter('cat', $categorie);
+
+        $produits = $paginator->paginate(
+            $queryBuilder,
+            $request->query->getInt('page', 1),
+            6
+        );
+
+        $categories = $categorieRepo->findAll();
+
+        return $this->render('produit/liste.html.twig', [
             'categorie' => $categorie,
             'produits' => $produits,
+            'categories' => $categories,
         ]);
     }
 
