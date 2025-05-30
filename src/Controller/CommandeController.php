@@ -8,8 +8,10 @@ use App\Repository\UserRepository;
 use App\Service\PanierService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+
 #[Route('/commande')]
 final class CommandeController extends AbstractController
 {
@@ -20,10 +22,15 @@ final class CommandeController extends AbstractController
 
     public function __construct(PanierService $panierService,
                                 EntityManagerInterface $entityManager,
-                                UserRepository $utilisateurRepository){
+                                UserRepository $utilisateurRepository,
+                                Security $security
+
+    ){
         $this->panierService = $panierService;
         $this->entityManager = $entityManager;
         $this->utilisateurRepository = $utilisateurRepository;
+        $this->security = $security;
+
     }
     #[Route('/liste', name: 'commande_liste')]
     public function liste(): Response
@@ -58,6 +65,20 @@ final class CommandeController extends AbstractController
         $commande->setTotal($total);
 
         foreach ($panier->getArticles() as $articlePanier) {
+            $produit = $articlePanier->getProduit();
+            $quantiteDemandee = $articlePanier->getQuantite();
+            $quantiteDisponible = $produit->getQuantite();
+
+            if ($quantiteDemandee > $quantiteDisponible) {
+                $this->addFlash('error', sprintf(
+                    'Quantité insuffisante pour le produit "%s". Quantité demandée: %d, Disponible: %d',
+                    $produit->getNom(),
+                    $quantiteDemandee,
+                    $quantiteDisponible
+                ));
+                return $this->redirectToRoute('panier_index');
+            }
+
             $articleCommande = new ArticleCommande();
             $articleCommande->setCommande($commande);
             $articleCommande->setProduit($articlePanier->getProduit());
@@ -65,6 +86,9 @@ final class CommandeController extends AbstractController
             $articleCommande->setPrixUnitaire($articlePanier->getProduit()->getPrix());
             $commande->addArticle($articleCommande);
             $this->entityManager->persist($articleCommande);
+
+            $produit->setQuantite($quantiteDisponible - $quantiteDemandee);
+            $this->entityManager->persist($produit);
         }
         $this->entityManager->persist($commande);
         $this->entityManager->flush();

@@ -7,7 +7,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 #[Route('/panier')]
+#[IsGranted('ROLE_USER')]
 final class PanierController extends AbstractController
 {
     private $panierService;
@@ -29,6 +32,9 @@ final class PanierController extends AbstractController
     {
         try {
             $quantite = (int) $request->request->get('quantite',1);
+
+
+
             $this->panierService->ajouter($id, $quantite);
             $this->addFlash('success','Produit ajouté au panier avec succes');
         }catch (\Exception $e){

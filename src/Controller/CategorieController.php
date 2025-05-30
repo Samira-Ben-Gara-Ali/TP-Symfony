@@ -23,6 +23,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class CategorieController extends AbstractController
 {
     #[Route('/admin/liste', name: 'categorie_liste')]
+    #[IsGranted('ROLE_ADMIN')]
     public function liste(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
     {
         $repository = $doctrine->getRepository(Categorie::class);

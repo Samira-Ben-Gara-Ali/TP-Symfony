@@ -35,26 +35,34 @@
 
                 </div>
                 <div class="col-md-6">
-                    <div class="right-element">
-                        <a href="#" class="user-account for-buy"><i
-                                    class="icon icon-user"></i><span>Account</span></a>
-                        <a href="{{path('panier_index') }}" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Cart:(0
-									$)</span></a>
+                    <nav id="navbar">
+                        <div class="main-menu stellarnav">
+                            <ul class="menu-list">
 
-                        <div class="action-menu">
 
-                            <div class="search-bar">
-                                <a href="#" class="search-button search-toggle" data-selector="#header-wrap">
-                                    <i class="icon icon-search"></i>
-                                </a>
-                                <form method="get" action="{{ path('produit_liste') }}" class="search-box">
-                                    <input name="search" class="search-field text search-input" placeholder="Rechercher un produit..." type="search">
-                                </form>
+                                    <li class="menu-item has-sub">
+                                        <a href="#" class="nav-link">Account</a>
+                                        <ul >
+                                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                                <li><a href="{{ path('app_logout') }}"><i class="icon icon-user"></i><span>Logout</span></a></li>
+                                            {% else %}
+                                                <li><a href="{{ path('app_login') }}"><i class="icon icon-user"></i><span>Login</span></a></li>
+                                                <li><a href="{{ path('app_register') }}"><i class="icon icon-user"></i><span>Register</span></a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </li>
+                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
 
+                                <li class="menu-item"><a href="{{path('panier_index') }}" class="cart for-buy"><i class="icon icon-clipboard"></i><span>Panier</span></a></li>
+                                {% endif %}
+                            </ul>
+                            <div class="hamburger">
+                                <span class="bar"></span>
+                                <span class="bar"></span>
+                                <span class="bar"></span>
                             </div>
                         </div>
-
-                    </div><!--top-right-->
+                    </nav>
                 </div>
 
             </div>
@@ -77,18 +85,21 @@
                         <div class="main-menu stellarnav">
                             <ul class="menu-list">
                                 <li class="menu-item"><a href="{{ path('home') }}">Accueil</a></li>
-                                <li class="menu-item has-sub">
-                                    <a href="#admin" class="nav-link">Administration</a>
-                                    <ul>
-                                        <li><a href="{{ path('produit_admin_liste') }}">Liste des produits</a></li>
-                                        <li><a href="{{ path('categorie_liste') }}">Liste des catégories</a></li>
-                                        <li><a href="{{ path('produit_new') }}">Ajouter un produit</a></li>
-                                        <li><a href="{{ path('categorie_new') }}">Ajouter une catégorie</a></li>
-                                    </ul>
-                                </li>
-
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <li class="menu-item has-sub">
+                                        <a href="#admin" class="nav-link">Administration</a>
+                                        <ul>
+                                            <li><a href="{{ path('produit_admin_liste') }}">Liste des produits</a></li>
+                                            <li><a href="{{ path('categorie_liste') }}">Liste des catégories</a></li>
+                                            <li><a href="{{ path('produit_new') }}">Ajouter un produit</a></li>
+                                            <li><a href="{{ path('categorie_new') }}">Ajouter une catégorie</a></li>
+                                        </ul>
+                                    </li>
+                                {% endif %}
                                 <li class="menu-item"><a href="{{path('produit_liste')}}" class="nav-link">Produits</a></li>
+                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                                 <li class="menu-item"><a href="{{path('commande_liste')}}" class="nav-link">Mes Commandes</a></li>
+                                {% endif %}
                             </ul>
                             <div class="hamburger">
                                 <span class="bar"></span>

@@ -149,6 +149,7 @@ final class ProduitController extends AbstractController
         return $this->redirectToRoute('produit_liste');
 }
     #[Route('/admin/liste', name: 'produit_admin_liste')]
+    #[IsGranted('ROLE_ADMIN')]
     public function adminListe(Request $request, ManagerRegistry $doctrine, PaginatorInterface $paginator): Response
     {
         $repository = $doctrine->getRepository(Produit::class);
