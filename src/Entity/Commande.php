@@ -18,17 +18,14 @@ class Commande
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    private ?User $utilisateur = null;
 
-    #[ORM\Column]
-    private ?\DateTime $dateCommande = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateCommande = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
     private ?string $total = null;
 
-    /**
-     * @var Collection<int, ArticleCommande>
-     */
     #[ORM\OneToMany(targetEntity: ArticleCommande::class, mappedBy: 'commande', orphanRemoval: true)]
     private Collection $articles;
 
@@ -43,27 +40,25 @@ class Commande
         return $this->id;
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?User
     {
         return $this->utilisateur;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
+    public function setUtilisateur(?User $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
-
         return $this;
     }
 
-    public function getDateCommande(): ?\DateTime
+    public function getDateCommande(): ?\DateTimeInterface
     {
         return $this->dateCommande;
     }
 
-    public function setDateCommande(\DateTime $dateCommande): static
+    public function setDateCommande(\DateTimeInterface $dateCommande): static
     {
         $this->dateCommande = $dateCommande;
-
         return $this;
     }
 
@@ -75,13 +70,9 @@ class Commande
     public function setTotal(?string $total): static
     {
         $this->total = $total;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, ArticleCommande>
-     */
     public function getArticles(): Collection
     {
         return $this->articles;
@@ -100,7 +91,6 @@ class Commande
     public function removeArticle(ArticleCommande $article): static
     {
         if ($this->articles->removeElement($article)) {
-            // set the owning side to null (unless already changed)
             if ($article->getCommande() === $this) {
                 $article->setCommande(null);
             }

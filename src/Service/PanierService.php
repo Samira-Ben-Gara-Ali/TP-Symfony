@@ -40,9 +40,8 @@ class PanierService
 
     public function getPanier(): Panier
     {
-        // a modifier par yassine aprés avoir etablir la couche securité pour recuperer
-        // l'utilisateur connecté
-        $utilisateur = $this->utilisateurRepository->findOneBy(['id'=>1]);
+
+        $utilisateur = $this->security->getUser();
 
 
 

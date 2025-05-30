@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/produit')]
 final class ProduitController extends AbstractController
@@ -83,6 +84,7 @@ final class ProduitController extends AbstractController
 
 
 #[Route('/new/{produit?}', name: 'produit_new')]
+#[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, ManagerRegistry $doctrine, Produit $produit=null): Response
     {
         $isNew=false;

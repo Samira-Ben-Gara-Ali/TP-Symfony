@@ -15,12 +15,11 @@ class Panier
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'panier', cascade: ['persist', 'remove'])]
-    private ?Utilisateur $utilisateur = null;
+    #[ORM\OneToOne(inversedBy: 'panier')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $utilisateur = null;
 
-    /**
-     * @var Collection<int, ArticleDuPanier>
-     */
+
     #[ORM\OneToMany(targetEntity: ArticleDuPanier::class, mappedBy: 'panier', orphanRemoval: true)]
     private Collection $articles;
 
@@ -34,21 +33,18 @@ class Panier
         return $this->id;
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    public function getUtilisateur(): ?User
     {
         return $this->utilisateur;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
+    public function setUtilisateur(?User $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, ArticleDuPanier>
-     */
     public function getArticles(): Collection
     {
         return $this->articles;
@@ -67,7 +63,6 @@ class Panier
     public function removeArticle(ArticleDuPanier $article): static
     {
         if ($this->articles->removeElement($article)) {
-            // set the owning side to null (unless already changed)
             if ($article->getPanier() === $this) {
                 $article->setPanier(null);
             }

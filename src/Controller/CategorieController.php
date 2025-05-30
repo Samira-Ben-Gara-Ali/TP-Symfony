@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/categorie')]
 final class CategorieController extends AbstractController
@@ -49,8 +50,10 @@ final class CategorieController extends AbstractController
 
 
     #[Route('/new/{categorie?}', name: 'categorie_new')]
+    #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request, ManagerRegistry $doctrine, Categorie $categorie =null): Response
     {
+
         $isNew=false;
         if (! $categorie) {
             $categorie = new Categorie();

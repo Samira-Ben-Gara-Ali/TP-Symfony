@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ArticleCommande;
 use App\Entity\Commande;
-use App\Repository\UtilisateurRepository;
+use App\Repository\UserRepository;
 use App\Service\PanierService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,9 +16,11 @@ final class CommandeController extends AbstractController
     private $panierService;
     private $entityManager;
     private $utilisateurRepository;
+    private $security;
+
     public function __construct(PanierService $panierService,
                                 EntityManagerInterface $entityManager,
-                                UtilisateurRepository $utilisateurRepository){
+                                UserRepository $utilisateurRepository){
         $this->panierService = $panierService;
         $this->entityManager = $entityManager;
         $this->utilisateurRepository = $utilisateurRepository;
@@ -26,9 +28,8 @@ final class CommandeController extends AbstractController
     #[Route('/liste', name: 'commande_liste')]
     public function liste(): Response
     {
-        // à modifier par yassine aprés avoir etablir la couche securité pour recuperer
-        // l'utilisateur connecté
-        $utilisateur = $this->utilisateurRepository->findOneBy(['id'=>1]);
+
+        $utilisateur = $this->security->getUser();
 
 
 
@@ -48,9 +49,8 @@ final class CommandeController extends AbstractController
             return $this->redirectToRoute('panier_index');
         }
         $commande = new Commande();
-        // à modifier par yassine aprés avoir etablir la couche securité pour recuperer
-        // l'utilisateur connecté
-        $utilisateur = $this->utilisateurRepository->findOneBy(['id'=>1]);
+
+        $utilisateur = $this->security->getUser();
 
         if($utilisateur){
             $commande->setUtilisateur($utilisateur);
@@ -81,9 +81,9 @@ final class CommandeController extends AbstractController
     #[Route('/details/{id}', name: 'commande_details')]
     public function details(Commande $commande): Response
     {
-        // à modifier par yassine aprés avoir etablir la couche securité pour recuperer
-        // l'utilisateur connecté
-        $utilisateur = $this->utilisateurRepository->findOneBy(['id'=>1]);
+       
+        $utilisateur = $this->security->getUser();
+
         if (!$utilisateur || $commande->getUtilisateur() !== $utilisateur) {
             $this->addFlash('error', 'Vous n\'êtes pas autorisé à voir cette commande.');
             return $this->redirectToRoute('commande_liste');

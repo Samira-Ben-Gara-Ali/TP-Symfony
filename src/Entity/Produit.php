@@ -39,25 +39,10 @@ class Produit
     #[ORM\JoinColumn(nullable: true, onDelete: "SET NULL")]
     private ?Categorie $categorie = null;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $auteur = null;
 
-    // Getter
-    public function getAuteur(): ?string
-    {
-        return $this->auteur;
-    }
-
-    // Setter
-    public function setAuteur(?string $auteur): self
-    {
-        $this->auteur = $auteur;
-        return $this;
-    }
-
-
-
-
+    // Getters et Setters
 
     public function getId(): ?int
     {
@@ -72,7 +57,6 @@ class Produit
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -84,7 +68,6 @@ class Produit
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -96,7 +79,6 @@ class Produit
     public function setPrix(float $prix): static
     {
         $this->prix = $prix;
-
         return $this;
     }
 
@@ -108,7 +90,6 @@ class Produit
     public function setQuantite(int $quantite): static
     {
         $this->quantite = $quantite;
-
         return $this;
     }
 
@@ -120,7 +101,6 @@ class Produit
     public function setImageUrl(?string $imageUrl): static
     {
         $this->imageUrl = $imageUrl;
-
         return $this;
     }
 
@@ -132,7 +112,6 @@ class Produit
     public function setEtat(string $etat): static
     {
         $this->etat = $etat;
-
         return $this;
     }
 
@@ -144,7 +123,6 @@ class Produit
     public function setDateAjout(\DateTimeImmutable $dateAjout): static
     {
         $this->dateAjout = $dateAjout;
-
         return $this;
     }
 
@@ -156,11 +134,17 @@ class Produit
     public function setCategorie(?Categorie $categorie): static
     {
         $this->categorie = $categorie;
-
         return $this;
     }
 
+    public function getAuteur(): ?string
+    {
+        return $this->auteur;
+    }
 
-
-
+    public function setAuteur(?string $auteur): static
+    {
+        $this->auteur = $auteur;
+        return $this;
+    }
 }
