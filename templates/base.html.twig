@@ -53,6 +53,40 @@
 			footer .badge {
 				font-size: 0.75rem;
 			}
+			/* Bootstrap dropdown fix for stellarnav */
+			.menu-item.dropdown .dropdown-menu {
+				position: absolute;
+				top: 100%;
+				left: 0;
+				z-index: 1000;
+				min-width: 250px;
+				width: max-content;
+				background-color: #fff;
+				border: 1px solid rgba(0, 0, 0, 0.15);
+				border-radius: 0.375rem;
+				box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
+			}
+			.menu-item.dropdown .dropdown-item {
+				display: block;
+				width: 100%;
+				padding: 0.75rem 1.25rem;
+				color: #212529;
+				text-decoration: none;
+				background-color: transparent;
+				border: 0;
+				white-space: nowrap;
+				font-size: 14px;
+			}
+			.menu-item.dropdown .dropdown-item:hover {
+				background-color: #f8f9fa;
+				color: #495057;
+			}
+			.menu-item.dropdown .dropdown-divider {
+				height: 0;
+				margin: 0.5rem 0;
+				overflow: hidden;
+				border-top: 1px solid #dee2e6;
+			}
 		</style>
 	</head>
 
@@ -140,15 +174,27 @@
 											<a href="{{ path('home') }}">Accueil</a>
 										</li>
 										{% if is_granted('ROLE_ADMIN') %}
-											<li class="menu-item has-sub">
-												<a href="#admin" class="nav-link">Administration</a>
-												<ul>
-													<li><ahref="{{path('produit_admin_liste')}}">Liste des produits</a></li>
-													<li><ahref="{{path('categorie_liste')}}">Liste des catégories</a></li>
-													<li><ahref="{{path('produit_new')}}">Ajouter un produit</a></li>
-													<li><ahref="{{path('categorie_new')}}">Ajouter une catégorie</a></li>
+											<!-- DEBUG: ADMIN MENU VISIBLE -->
+											<li class="menu-item has-sub dropdown">
+												<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Administration</a>
+												<ul class="dropdown-menu">
+													<li>
+														<a class="dropdown-item" href="{{ path('produit_admin_liste') }}">Liste des produits</a>
+													</li>
+													<li>
+														<a class="dropdown-item" href="{{ path('categorie_liste') }}">Liste des catégories</a>
+													</li>
+													<li><hr class="dropdown-divider"></li>
+													<li>
+														<a class="dropdown-item" href="{{ path('produit_new') }}">Ajouter un produit</a>
+													</li>
+													<li>
+														<a class="dropdown-item" href="{{ path('categorie_new') }}">Ajouter une catégorie</a>
+													</li>
 												</ul>
 											</li>
+											{% else %}
+											<!-- DEBUG: NO ADMIN ROLE -->
 										{% endif %}
 										<li class="menu-item">
 											<a href="{{path('produit_liste')}}" class="nav-link">Produits</a>
@@ -323,7 +369,7 @@
 						</div>
 						<div class="col-md-6 text-md-end">
 							<div class="mb-2">
-								<span class="small">Livraison gratuite dès 50€</span>
+								<span class="small">Livraison gratuite dès 50dt</span>
 							</div>
 							<div class="d-flex justify-content-md-end gap-2">
 								<span class="badge bg-success">

@@ -1,45 +1,91 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    Liste des Produits
+	Liste des Produits
 {% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
+	<div class="container mt-5">
 
-        {% include 'produit/_search_form.html.twig' with {'categories': categories} %}
+		{% include 'produit/_search_form.html.twig' with {'categories': categories} %}
 
-        <div class="row">
-            {% if produits is empty %}
-                <p>Aucun produit ne correspond aux critères de recherche.</p>
-            {% else %}
-                {% for produit in produits %}
-                    <div class="col-md-3">
-                        <div class="product-item">
-                            <figure class="product-style">
-                                <a href="{{ path('produit_details', {'produit': produit.id}) }}">
+		<!-- Affichage des critères de recherche actifs -->
+		{% if app.request.get('search') or app.request.get('categorie') or app.request.get('auteur') or app.request.get('minPrice') or app.request.get('maxPrice') %}
+			<div class="alert alert-info d-flex justify-content-between align-items-center">
+				<div>
+					<strong>Filtres actifs :</strong>
+					{% if app.request.get('search') %}
+						<span class="badge bg-primary me-1">Recherche : "{{ app.request.get('search') }}"</span>
+					{% endif %}
+					{% if app.request.get('categorie') %}
+						{% for cat in categories %}
+							{% if cat.id == app.request.get('categorie') %}
+								<span class="badge bg-secondary me-1">Catégorie :
+									{{ cat.nom }}</span>
+							{% endif %}
+						{% endfor %}
+					{% endif %}
+					{% if app.request.get('auteur') %}
+						<span class="badge bg-success me-1">Auteur : "{{ app.request.get('auteur') }}"</span>
+					{% endif %}
+					{% if app.request.get('minPrice') or app.request.get('maxPrice') %}
+						<span class="badge bg-warning text-dark me-1">
+							Prix :
+							{% if app.request.get('minPrice') %}
+								{{ app.request.get('minPrice') }}dt{% else %}0dt
+							{% endif %}
+							-
+							{% if app.request.get('maxPrice') %}
+								{{ app.request.get('maxPrice') }}dt{% else %}∞
+							{% endif %}
+						</span>
+					{% endif %}
+				</div>
+				<a href="{{ path('produit_liste') }}" class="btn btn-sm btn-outline-danger">
+					<i class="bi bi-x"></i>
+					Effacer les filtres
+				</a>
+			</div>
+		{% endif %}
 
-                                {% if produit.imageUrl %}
-                                    <img src="{{ asset(produit.imageUrl) }}" alt="Books" class="product-item" >
-                                {% else %}
-                                    <img src="{{ asset('assets/images/default.png') }}" alt="Pas d'image" class="product-item">
-                                {% endif %}
-                                </a>
-                                <button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='{{ path('panier_ajouter', {'id': produit.id}) }}'">Ajouter au panier</button>
-                            </figure>
-                                <figcaption>
-                                    <h3>{{ produit.nom }}</h3>
-                                    <span>{{ produit.auteur }}</span>
-                                    <div class="item-price">{{ produit.prix }}</div>
-                                </figcaption>
+		<div class="row">
+			{% if produits is empty %}
+				<div class="col-12 text-center py-5">
+					<i class="bi bi-search fs-1 text-muted mb-3"></i>
+					<h4 class="text-muted">Aucun produit trouvé</h4>
+					<p class="text-muted">Essayez de modifier vos critères de recherche ou
+						<a href="{{ path('produit_liste') }}" class="text-primary">voir tous les produits</a>
+					</p>
+				</div>
+			{% else %}
+				{% for produit in produits %}
+					<div class="col-md-3">
+						<div class="product-item">
+							<figure class="product-style">
+								<a href="{{ path('produit_details', {'produit': produit.id}) }}">
 
-                        </div>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        </div>
-        <div class="d-flex justify-content-center mt-4">
-            {{ knp_pagination_render(produits) }}
-        </div>
-    </div>
+									{% if produit.imageUrl %}
+										<img src="{{ asset(produit.imageUrl) }}" alt="Books" class="product-item">
+									{% else %}
+										<img src="{{ asset('assets/images/default.png') }}" alt="Pas d'image" class="product-item">
+									{% endif %}
+								</a>
+								<button type="button" class="add-to-cart" data-product-tile="add-to-cart" onclick="window.location.href='{{ path('panier_ajouter', {'id': produit.id}) }}'">Ajouter au panier</button>
+							</figure>
+							<figcaption>
+								<h3>{{ produit.nom }}</h3>
+								<span>{{ produit.auteur }}</span>
+								<div class="item-price">{{ produit.prix }}
+									dt</div>
+							</figcaption>
+
+						</div>
+					</div>
+				{% endfor %}
+			{% endif %}
+		</div>
+		<div class="d-flex justify-content-center mt-4">
+			{{ knp_pagination_render(produits) }}
+		</div>
+	</div>
 {% endblock %}

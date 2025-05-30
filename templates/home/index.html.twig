@@ -1,59 +1,403 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Accueil
+	BookSaw - Votre librairie en ligne en Tunisie
 {% endblock %}
 
 {% block body %}
 
-	<section id="billboard">
-
+	<!-- Hero Section -->
+	<section id="billboard" class="bg-primary text-white">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-
-					<button class="prev slick-arrow">
-						<i class="icon icon-arrow-left"></i>
-					</button>
-
 					<div class="main-slider pattern-overlay">
 						<div class="slider-item">
 							<div class="banner-content">
-								<h2 class="banner-title">Life of the Wild</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero
-									                                    ipsum enim pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis
-									                                    urna, a eu.</p>
-
+								<h1 class="banner-title display-4 fw-bold">Découvrez votre prochaine lecture</h1>
+								<p class="lead mb-4">Des milliers de livres soigneusement sélectionnés pour tous les goûts. Livraison gratuite dès 50dt partout en Tunisie.</p>
+								<div class="d-flex gap-3">
+									<a href="{{ path('produit_liste') }}" class="btn btn-light btn-lg">
+										<i class="bi bi-book"></i>
+										Découvrir nos livres
+									</a>
+									<a href="#nouveautes" class="btn btn-outline-light btn-lg">
+										<i class="bi bi-sparkles"></i>
+										Nouveautés
+									</a>
+								</div>
 							</div>
-							<!--banner-content-->
-							<img src="{{asset('assets/images/main-banner1.jpg')}}" alt="banner" class="banner-image">
 						</div>
-						<!--slider-item-->
-
-						<div class="slider-item">
-							<div class="banner-content">
-								<h2 class="banner-title">Birds gonna be Happy</h2>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eu feugiat amet, libero
-									                                    ipsum enim pharetra hac. Urna commodo, lacus ut magna velit eleifend. Amet, quis
-									                                    urna, a eu.</p>
-
-							</div>
-							<!--banner-content-->
-							<img src="{{asset('assets/images/main-banner2.jpg')}}" alt="banner" class="banner-image">
-						</div>
-						<!--slider-item-->
-
 					</div>
-					<!--slider-->
-
-					<button class="next slick-arrow">
-						<i class="icon icon-arrow-right"></i>
-					</button>
-
 				</div>
 			</div>
 		</div>
-
 	</section>
+
+	<!-- Barre de recherche proéminente -->
+	<section class="py-4 bg-light">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-8">
+					<form action="{{ path('produit_liste') }}" method="GET" class="d-flex">
+						<input type="text" name="search" class="form-control form-control-lg me-2" placeholder="Rechercher un livre, un auteur...">
+						<button type="submit" class="btn btn-primary btn-lg px-4">
+							<i class="bi bi-search"></i>
+							Rechercher
+						</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Avantages e-commerce -->
+	<section class="py-4 bg-white border-bottom">
+		<div class="container">
+			<div class="row text-center g-4">
+				<div class="col-md-3">
+					<div class="feature-item">
+						<i class="bi bi-truck text-success fs-1 mb-2"></i>
+						<h6 class="fw-bold">Livraison gratuite</h6>
+						<small class="text-muted">Dès 50dt d'achat</small>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="feature-item">
+						<i class="bi bi-shield-check text-primary fs-1 mb-2"></i>
+						<h6 class="fw-bold">Paiement sécurisé</h6>
+						<small class="text-muted">SSL & Stripe</small>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="feature-item">
+						<i class="bi bi-arrow-clockwise text-info fs-1 mb-2"></i>
+						<h6 class="fw-bold">Retour 30 jours</h6>
+						<small class="text-muted">Satisfaction garantie</small>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="feature-item">
+						<i class="bi bi-headset text-warning fs-1 mb-2"></i>
+						<h6 class="fw-bold">Support client</h6>
+						<small class="text-muted">7j/7 disponible</small>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Catégories populaires -->
+	<section class="py-5" id="categories">
+		<div class="container">
+			<div class="row mb-4">
+				<div class="col-12 text-center">
+					<h2 class="fw-bold">Nos catégories</h2>
+					<p class="text-muted">Explorez nos différentes collections</p>
+				</div>
+			</div>
+			<div class="row g-3">
+				{% for categorie in categories %}
+					<div class="col-md-2 col-sm-4 col-6">
+						<a href="{{ path('produit_liste') }}?categorie={{ categorie.id }}" class="text-decoration-none">
+							<div class="card border-0 shadow-sm h-100 text-center category-card" data-category="{{ categorie.nom }}">
+								<div class="card-body py-4">
+									{% if categorie.nom == 'Fiction' %}
+										<i class="bi bi-book text-white fs-1 mb-2"></i>
+									{% elseif categorie.nom == 'Science-Fiction' %}
+										<i class="bi bi-rocket text-white fs-1 mb-2"></i>
+									{% elseif categorie.nom == 'Biographie' %}
+										<i class="bi bi-person-circle text-white fs-1 mb-2"></i>
+									{% elseif categorie.nom == 'Histoire' %}
+										<i class="bi bi-clock-history text-white fs-1 mb-2"></i>
+									{% elseif categorie.nom == 'Développement Personnel' %}
+										<i class="bi bi-lightbulb text-white fs-1 mb-2"></i>
+									{% elseif categorie.nom == 'Policier' %}
+										<i class="bi bi-search text-white fs-1 mb-2"></i>
+									{% elseif categorie.nom == 'Jeunesse' %}
+										<i class="bi bi-balloon text-white fs-1 mb-2"></i>
+									{% else %}
+										<i class="bi bi-bookmark text-white fs-1 mb-2"></i>
+									{% endif %}
+									<h6 class="card-title mb-0 text-white">{{ categorie.nom }}</h6>
+								</div>
+							</div>
+						</a>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+
+	<!-- Nouveautés -->
+	<section class="py-5 bg-light" id="nouveautes">
+		<div class="container">
+			<div class="row mb-4">
+				<div class="col-12 text-center">
+					<h2 class="fw-bold">Nouveautés</h2>
+					<p class="text-muted">Découvrez nos dernières arrivées</p>
+				</div>
+			</div>
+			<div class="row g-4">
+				{% for produit in nouveautes %}
+					<div class="col-lg-3 col-md-6">
+						<div class="card border-0 shadow-sm h-100 product-card">
+							<div class="position-relative">
+								{% if produit.imageUrl %}
+									<img src="{{ asset(produit.imageUrl) }}" class="card-img-top" alt="{{ produit.nom }}" style="height: 250px; object-fit: cover;">
+								{% else %}
+									<img src="{{ asset('assets/images/default.png') }}" class="card-img-top" alt="Pas d'image" style="height: 250px; object-fit: cover;">
+								{% endif %}
+								<div class="position-absolute top-0 start-0 m-2">
+									<span class="badge bg-success">Nouveau</span>
+								</div>
+							</div>
+							<div class="card-body d-flex flex-column">
+								<h6 class="card-title">{{ produit.nom }}</h6>
+								<p class="text-muted small mb-2">{{ produit.auteur }}</p>
+								<p class="card-text flex-grow-1 small">{{ produit.description|slice(0, 80) }}...</p>
+								<div class="d-flex justify-content-between align-items-center mt-auto">
+									<span class="fw-bold text-primary">{{ produit.prix }}
+										dt</span>
+									<div class="btn-group-sm">
+										<a href="{{ path('produit_details', {'produit': produit.id}) }}" class="btn btn-outline-primary btn-sm">Voir</a>
+										<a href="{{ path('panier_ajouter', {'id': produit.id}) }}" class="btn btn-primary btn-sm">
+											<i class="bi bi-cart-plus"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+			<div class="text-center mt-4">
+				<a href="{{ path('produit_liste') }}" class="btn btn-outline-primary btn-lg">Voir tous les produits</a>
+			</div>
+		</div>
+	</section>
+
+	<!-- Meilleures ventes -->
+	<section class="py-5" id="bestsellers">
+		<div class="container">
+			<div class="row mb-4">
+				<div class="col-12 text-center">
+					<h2 class="fw-bold">Meilleures ventes</h2>
+					<p class="text-muted">Les favoris de nos lecteurs</p>
+				</div>
+			</div>
+			<div class="row g-4">
+				{% for produit in meilleuresVentes %}
+					<div class="col-lg-3 col-md-6">
+						<div class="card border-0 shadow-sm h-100 product-card">
+							<div class="position-relative">
+								{% if produit.imageUrl %}
+									<img src="{{ asset(produit.imageUrl) }}" class="card-img-top" alt="{{ produit.nom }}" style="height: 250px; object-fit: cover;">
+								{% else %}
+									<img src="{{ asset('assets/images/default.png') }}" class="card-img-top" alt="Pas d'image" style="height: 250px; object-fit: cover;">
+								{% endif %}
+								<div class="position-absolute top-0 start-0 m-2">
+									<span class="badge bg-warning text-dark">Bestseller</span>
+								</div>
+							</div>
+							<div class="card-body d-flex flex-column">
+								<h6 class="card-title">{{ produit.nom }}</h6>
+								<p class="text-muted small mb-2">{{ produit.auteur }}</p>
+								<p class="card-text flex-grow-1 small">{{ produit.description|slice(0, 80) }}...</p>
+								<div class="d-flex justify-content-between align-items-center mt-auto">
+									<span class="fw-bold text-primary">{{ produit.prix }}
+										dt</span>
+									<div class="btn-group-sm">
+										<a href="{{ path('produit_details', {'produit': produit.id}) }}" class="btn btn-outline-primary btn-sm">Voir</a>
+										<a href="{{ path('panier_ajouter', {'id': produit.id}) }}" class="btn btn-primary btn-sm">
+											<i class="bi bi-cart-plus"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</section>
+
+	<!-- Statistiques BookSaw -->
+	<section class="py-5 bg-primary text-white">
+		<div class="container">
+			<div class="row text-center g-4">
+				<div class="col-md-3">
+					<div class="stat-item">
+						<h2 class="display-4 fw-bold mb-2">500+</h2>
+						<p class="mb-0">Livres disponibles</p>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="stat-item">
+						<h2 class="display-4 fw-bold mb-2">1K+</h2>
+						<p class="mb-0">Clients satisfaits</p>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="stat-item">
+						<h2 class="display-4 fw-bold mb-2">24h</h2>
+						<p class="mb-0">Livraison rapide</p>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="stat-item">
+						<h2 class="display-4 fw-bold mb-2">98%</h2>
+						<p class="mb-0">Satisfaction client</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Témoignages -->
+	<section class="py-5 bg-light">
+		<div class="container">
+			<div class="row mb-4">
+				<div class="col-12 text-center">
+					<h2 class="fw-bold">Ce que disent nos clients</h2>
+					<p class="text-muted">Témoignages de lecteurs satisfaits</p>
+				</div>
+			</div>
+			<div class="row g-4">
+				<div class="col-md-4">
+					<div class="card border-0 shadow-sm">
+						<div class="card-body text-center">
+							<div class="mb-3">
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+							</div>
+							<p class="card-text">"Service excellent, livraison rapide et livres en parfait état. Je recommande BookSaw !"</p>
+							<footer class="blockquote-footer">
+								<cite title="Source Title">Amira, Tunis</cite>
+							</footer>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card border-0 shadow-sm">
+						<div class="card-body text-center">
+							<div class="mb-3">
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+							</div>
+							<p class="card-text">"Large choix de livres et prix très compétitifs. Mon nouveau site préféré pour acheter des livres."</p>
+							<footer class="blockquote-footer">
+								<cite title="Source Title">Mohamed, Sfax</cite>
+							</footer>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card border-0 shadow-sm">
+						<div class="card-body text-center">
+							<div class="mb-3">
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+								<i class="bi bi-star-fill text-warning"></i>
+							</div>
+							<p class="card-text">"Interface simple et intuitive. J'ai trouvé tous les livres que je cherchais facilement."</p>
+							<footer class="blockquote-footer">
+								<cite title="Source Title">Fatma, Sousse</cite>
+							</footer>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Call to Action Newsletter -->
+	<section class="py-5 bg-dark text-white">
+		<div class="container">
+			<div class="row justify-content-center text-center">
+				<div class="col-md-8">
+					<h2 class="fw-bold mb-3">Restez informé de nos nouveautés</h2>
+					<p class="mb-4">Inscrivez-vous à notre newsletter et recevez en avant-première nos dernières arrivées et offres spéciales.</p>
+					<form class="d-flex justify-content-center">
+						<div class="input-group" style="max-width: 400px;">
+							<input type="email" class="form-control" placeholder="Votre email">
+							<button class="btn btn-primary" type="submit">
+								<i class="bi bi-envelope"></i>
+								S'inscrire
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<style>
+		.product-card:hover {
+			transform: translateY(-5px);
+			transition: all 0.3s ease;
+		}
+		.category-card:hover {
+			transform: translateY(-3px);
+			transition: all 0.3s ease;
+		}
+		.category-card:hover i {
+			transform: scale(1.2);
+			transition: all 0.3s ease;
+		}
+		.category-card {
+			transition: all 0.3s ease;
+		}
+		.category-card:hover {
+			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+		}
+		.feature-item:hover i {
+			transform: scale(1.1);
+			transition: all 0.3s ease;
+		}
+		.stat-item h2 {
+			background: linear-gradient(45deg, #fff, #e3f2fd);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+		}
+		/* Gradients pour les catégories */
+		.category-card[data-category="Fiction"] {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+		}
+		.category-card[data-category="Science-Fiction"] {
+			background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+			color: white;
+		}
+		.category-card[data-category="Biographie"] {
+			background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+			color: white;
+		}
+		.category-card[data-category="Histoire"] {
+			background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+			color: white;
+		}
+		.category-card[data-category="Développement Personnel"] {
+			background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+			color: white;
+		}
+		.category-card[data-category="Policier"] {
+			background: linear-gradient(135deg, #30cfd0 0%, #91a7ff 100%);
+			color: white;
+		}
+		.category-card[data-category="Jeunesse"] {
+			background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+			color: white;
+		}
+	</style>
 
 {% endblock %}

@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+
 class ProduitForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -19,7 +20,7 @@ class ProduitForm extends AbstractType
             ->add('nom')
             ->add('description')
             ->add('prix', TextType::class, [
-                'label' => 'Prix',
+                'label' => 'Prix (dt)',
                 'required' => true,
                 'attr' => ['placeholder' => '0.00']
             ])
@@ -40,7 +41,6 @@ class ProduitForm extends AbstractType
                     'class' => 'btn btn-primary rounded'
                 ]
             ]);
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

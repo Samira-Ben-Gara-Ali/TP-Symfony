@@ -36,7 +36,7 @@ final class ProduitController extends AbstractController
         $queryBuilder = $repository->createQueryBuilder('p');
 
         if ($search) {
-            $queryBuilder->andWhere('p.nom LIKE :search')
+            $queryBuilder->andWhere('p.nom LIKE :search OR p.auteur LIKE :search OR p.description LIKE :search')
                 ->setParameter('search', '%' . $search . '%');
         }
 
