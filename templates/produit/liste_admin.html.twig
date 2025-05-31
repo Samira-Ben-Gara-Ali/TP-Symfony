@@ -7,9 +7,9 @@
 {% block body %}
 	<div class="container mt-5">
 		<div class="d-flex justify-content-between align-items-center mb-4">
-			<h2 class="mb-0">Liste Des Produits</h2>
-			<a class="btn btn-outline-secondary rounded" href="{{ path('produit_new') }}">
-				<i class="bi bi-plus-circle"></i>
+			<h2 class="mb-0">Gestion Des Produits</h2>
+			<a class="btn btn-primary rounded" href="{{ path('produit_new') }}">
+				<i class="bi bi-plus-circle me-2"></i>
 				Ajouter un produit
 			</a>
 		</div>
@@ -17,37 +17,55 @@
 		<div class="card shadow-sm border-0">
 			<div class="card-body">
 				<table class="table table-hover" style="background-color: rgb(243, 242, 236);">
-					<thead>
+					<thead class="table-dark">
 						<tr>
 							<th>Nom</th>
 							<th>Auteur</th>
-							<th>Prix (€)</th>
+							<th>Prix (dt)</th>
 							<th>Quantité</th>
 							<th>État</th>
 							<th>Catégorie</th>
-							<th>Action</th>
+							<th class="text-center">Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for produit in produits %}
 							<tr>
-								<td>{{ produit.nom }}</td>
+								<td class="fw-semibold">{{ produit.nom }}</td>
 								<td>{{ produit.auteur }}</td>
-								<td>{{ produit.prix }}</td>
-								<td>{{ produit.quantite }}</td>
-								<td>{{ produit.etat }}</td>
-								<td>{{ produit.categorie ? produit.categorie.nom : 'Non définie' }}</td>
+								<td class="text-primary fw-bold">{{ produit.prix }}
+									dt</td>
 								<td>
-									<a href="{{ path('produit_details', {'produit': produit.id}) }}">Voir</a>
-									|
-									<a href="{{ path('produit_new', {'produit': produit.id}) }}" class="text-warning">Modifier</a>
-									|
-									<a href="{{ path('produit_supprimer', {'produit': produit.id}) }}" onclick="return confirm('Supprimer ce produit ?')" class="text-danger">Supprimer</a>
+									<span class="badge {{ produit.quantite > 0 ? 'bg-success' : 'bg-danger' }}">
+										{{ produit.quantite }}
+									</span>
+								</td>
+								<td>
+									<span class="badge {{ produit.etat == 'Disponible' ? 'bg-success' : 'bg-warning' }}">
+										{{ produit.etat }}
+									</span>
+								</td>
+								<td>{{ produit.categorie ? produit.categorie.nom : 'Non définie' }}</td>
+								<td class="text-center">
+									<div class="btn-group" role="group">
+										<a href="{{ path('produit_details', {'produit': produit.id}) }}" class="btn btn-info btn-sm" title="Voir les détails">
+											<i class="bi bi-eye me-1"></i>Voir
+										</a>
+										<a href="{{ path('produit_new', {'produit': produit.id}) }}" class="btn btn-warning btn-sm" title="Modifier ce produit">
+											<i class="bi bi-pencil-square me-1"></i>Modifier
+										</a>
+										<a href="{{ path('produit_supprimer', {'produit': produit.id}) }}" onclick="return confirm('Supprimer ce produit ?')" class="btn btn-danger btn-sm" title="Supprimer ce produit">
+											<i class="bi bi-trash me-1"></i>Supprimer
+										</a>
+									</div>
 								</td>
 							</tr>
 						{% else %}
 							<tr>
-								<td colspan="7">Aucun produit à afficher.</td>
+								<td colspan="7" class="text-center text-muted py-4">
+									<i class="bi bi-box-seam-fill fs-2 mb-2 d-block"></i>
+									Aucun produit à afficher.
+								</td>
 							</tr>
 						{% endfor %}
 					</tbody>

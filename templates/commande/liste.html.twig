@@ -4,43 +4,79 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Mes Commandes</h1>
+	<div class="container mt-5">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h2 class="mb-0">
+				<i class="bi bi-receipt-cutoff me-2 text-primary"></i>
+				Mes Commandes
+			</h2>
+			<a href="{{ path('produit_liste') }}" class="btn btn-primary">
+				<i class="bi bi-arrow-left me-2"></i>
+				Retour aux produits
+			</a>
+		</div>
 
-	{% for label, messages in app.flashes %}
-		{% for message in messages %}
-			<div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-				{{ message }}
-				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-			</div>
+		{% for label, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+					{{ message }}
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+			{% endfor %}
 		{% endfor %}
-	{% endfor %}
-	{% if commandes is empty %}
-		<p>Vous n'avez aucune commande en cours.</p>
-	{% else %}
-		<table class="table">
-			<thead>
-				<tr>
-					<th>Numéro</th>
-					<th>Date</th>
-					<th>Total</th>
-					<th>Détails</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for commande in commandes %}
-					<tr>
-						<td>#{{ commande.id }}</td>
-						<td>{{ commande.dateCommande|date('d/m/Y H:i') }}</td>
-						<td>{{ commande.total|number_format(2) }}
-							dt</td>
-						<td>
-							<a href="{{ path('commande_details', {'id': commande.id}) }}" class="btn btn-info btn-sm">Voir</a>
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	{% endif %}
 
-	<a href="{{ path('produit_liste') }}" class="btn btn-primary">Retour aux produits</a>
+		<div class="card shadow-sm border-0">
+			<div class="card-body">
+				{% if commandes is empty %}
+					<div class="text-center text-muted py-5">
+						<i class="bi bi-clipboard-x fs-1 mb-3 d-block"></i>
+						<h4>Aucune commande</h4>
+						<p>Vous n'avez aucune commande en cours.</p>
+						<a href="{{ path('produit_liste') }}" class="btn btn-primary mt-3">
+							<i class="bi bi-shop me-2"></i>
+							Commencer mes achats
+						</a>
+					</div>
+				{% else %}
+					<table class="table table-hover" style="background-color: rgb(243, 242, 236);">
+						<thead class="table-dark">
+							<tr>
+								<th>
+									<i class="bi bi-hash me-1"></i>
+									Numéro
+								</th>
+								<th>
+									<i class="bi bi-calendar-event me-1"></i>
+									Date
+								</th>
+								<th>
+									<i class="bi bi-currency-dollar me-1"></i>
+									Total
+								</th>
+								<th class="text-center">
+									<i class="bi bi-gear me-1"></i>
+									Actions
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for commande in commandes %}
+								<tr>
+									<td class="fw-semibold">#{{ commande.id }}</td>
+									<td>{{ commande.dateCommande|date('d/m/Y H:i') }}</td>
+									<td class="text-primary fw-bold">{{ commande.total|number_format(2) }}
+										dt</td>
+									<td class="text-center">
+										<a href="{{ path('commande_details', {'id': commande.id}) }}" class="btn btn-info btn-sm" title="Voir les détails de cette commande">
+											<i class="bi bi-eye me-1"></i>Détails
+										</a>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				{% endif %}
+			</div>
+		</div>
+	</div>
 {% endblock %}

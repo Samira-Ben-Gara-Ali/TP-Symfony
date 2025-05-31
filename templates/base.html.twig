@@ -593,6 +593,85 @@
 						height: 160px !important;
 					}
 				}
+
+				/* EFFET ROUGE POUR LES BOUTONS SUPPRIMER */
+				.btn-danger,
+				a.btn-danger,
+				button.btn-danger {
+					background: #dc3545 !important;
+					border-color: #dc3545 !important;
+					color: #ffffff !important;
+					font-weight: 600 !important;
+					transition: all 0.3s ease !important;
+				}
+
+				.btn-danger:hover,
+				a.btn-danger:hover,
+				button.btn-danger:hover {
+					background: #bb2d3b !important;
+					border-color: #b02a37 !important;
+					color: #ffffff !important;
+					transform: translateY(-2px) !important;
+					box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5) !important;
+				}
+
+				.btn-danger:focus,
+				a.btn-danger:focus,
+				button.btn-danger:focus {
+					background: #bb2d3b !important;
+					border-color: #b02a37 !important;
+					color: #ffffff !important;
+					box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5) !important;
+				}
+
+				.btn-danger:active,
+				a.btn-danger:active,
+				button.btn-danger:active {
+					background: #b02a37 !important;
+					border-color: #a02834 !important;
+					color: #ffffff !important;
+					transform: translateY(0) !important;
+					box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3) !important;
+				}
+
+				/* Effet spécial pour l'icône de suppression */
+				.btn-danger i.bi-trash,
+				a.btn-danger i.bi-trash,
+				button.btn-danger i.bi-trash {
+					transition: transform 0.3s ease !important;
+				}
+
+				.btn-danger:hover i.bi-trash,
+				a.btn-danger:hover i.bi-trash,
+				button.btn-danger:hover i.bi-trash {
+					transform: scale(1.2) rotate(10deg) !important;
+				}
+
+				/* S'assurer que les liens btn-danger fonctionnent */
+				a.btn-danger {
+					text-decoration: none !important;
+				}
+
+				a.btn-danger:hover {
+					text-decoration: none !important;
+				}
+
+				/* Spécifiquement pour les tableaux d'administration */
+				table .btn-danger,
+				.table .btn-danger,
+				.card .btn-danger {
+					background: #dc3545 !important;
+					border-color: #dc3545 !important;
+					color: #ffffff !important;
+				}
+
+				table .btn-danger:hover,
+				.table .btn-danger:hover,
+				.card .btn-danger:hover {
+					background: #bb2d3b !important;
+					border-color: #b02a37 !important;
+					color: #ffffff !important;
+				}
 		</style>
 	</head>
 
@@ -881,6 +960,85 @@
 			.d-flex .input-group {
 				margin-top: 0 !important;
 				margin-bottom: 0 !important;
+			}
+
+			/* EFFET ROUGE POUR LES BOUTONS SUPPRIMER */
+			.btn-danger,
+			a.btn-danger,
+			button.btn-danger {
+				background: #dc3545 !important;
+				border-color: #dc3545 !important;
+				color: #ffffff !important;
+				font-weight: 600 !important;
+				transition: all 0.3s ease !important;
+			}
+
+			.btn-danger:hover,
+			a.btn-danger:hover,
+			button.btn-danger:hover {
+				background: #bb2d3b !important;
+				border-color: #b02a37 !important;
+				color: #ffffff !important;
+				transform: translateY(-2px) !important;
+				box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5) !important;
+			}
+
+			.btn-danger:focus,
+			a.btn-danger:focus,
+			button.btn-danger:focus {
+				background: #bb2d3b !important;
+				border-color: #b02a37 !important;
+				color: #ffffff !important;
+				box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5) !important;
+			}
+
+			.btn-danger:active,
+			a.btn-danger:active,
+			button.btn-danger:active {
+				background: #b02a37 !important;
+				border-color: #a02834 !important;
+				color: #ffffff !important;
+				transform: translateY(0) !important;
+				box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3) !important;
+			}
+
+			/* Effet spécial pour l'icône de suppression */
+			.btn-danger i.bi-trash,
+			a.btn-danger i.bi-trash,
+			button.btn-danger i.bi-trash {
+				transition: transform 0.3s ease !important;
+			}
+
+			.btn-danger:hover i.bi-trash,
+			a.btn-danger:hover i.bi-trash,
+			button.btn-danger:hover i.bi-trash {
+				transform: scale(1.2) rotate(10deg) !important;
+			}
+
+			/* S'assurer que les liens btn-danger fonctionnent */
+			a.btn-danger {
+				text-decoration: none !important;
+			}
+
+			a.btn-danger:hover {
+				text-decoration: none !important;
+			}
+
+			/* Spécifiquement pour les tableaux d'administration */
+			table .btn-danger,
+			.table .btn-danger,
+			.card .btn-danger {
+				background: #dc3545 !important;
+				border-color: #dc3545 !important;
+				color: #ffffff !important;
+			}
+
+			table .btn-danger:hover,
+			.table .btn-danger:hover,
+			.card .btn-danger:hover {
+				background: #bb2d3b !important;
+				border-color: #b02a37 !important;
+				color: #ffffff !important;
 			}
 		</style>
 	</body>
