@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProduitRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -41,6 +43,14 @@ class Produit
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $auteur = null;
+
+    #[ORM\OneToMany(mappedBy: 'produit', targetEntity: Review::class, orphanRemoval: true)]
+    private Collection $reviews;
+
+    public function __construct()
+    {
+        $this->reviews = new ArrayCollection();
+    }
 
     // Getters et Setters
 
@@ -146,5 +156,54 @@ class Produit
     {
         $this->auteur = $auteur;
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Review>
+     */
+    public function getReviews(): Collection
+    {
+        return $this->reviews;
+    }
+
+    public function addReview(Review $review): static
+    {
+        if (!$this->reviews->contains($review)) {
+            $this->reviews->add($review);
+            $review->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReview(Review $review): static
+    {
+        if ($this->reviews->removeElement($review)) {
+            // set the owning side to null (unless already changed)
+            if ($review->getProduit() === $this) {
+                $review->setProduit(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAverageRating(): float
+    {
+        if ($this->reviews->isEmpty()) {
+            return 0.0;
+        }
+
+        $totalRating = 0;
+        foreach ($this->reviews as $review) {
+            $totalRating += $review->getRating();
+        }
+
+        return round($totalRating / $this->reviews->count(), 1);
+    }
+
+    public function getTotalReviews(): int
+    {
+        return $this->reviews->count();
     }
 }

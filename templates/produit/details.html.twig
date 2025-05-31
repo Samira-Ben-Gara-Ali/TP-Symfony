@@ -58,6 +58,23 @@
 							</span>
 						{% endif %}
 						<h1 class="display-5 fw-bold mb-2">{{ produit.nom }}</h1>
+						<div class="mb-3 product-rating-summary">
+							{% set averageRating = produit.getAverageRating() %}
+							{% set totalReviews = produit.getTotalReviews() %}
+							{% if totalReviews > 0 %}
+								{% for i in 1..5 %}
+									<span class="bi bi-star{{ i <= averageRating ? '-fill text-warning' : ' text-muted' }}"></span>
+								{% endfor %}
+								<span class="ms-2 fw-semibold">{{ averageRating|number_format(1, ',') }}/5</span>
+								<span class="ms-2 text-muted">({{ totalReviews }}
+									avis)</span>
+							{% else %}
+								<span class="text-muted fst-italic">
+									<i class="bi bi-chat-square-text"></i>
+									Pas encore d'avis
+								</span>
+							{% endif %}
+						</div>
 						<p class="text-muted fs-5 mb-0">
 							<i class="bi bi-person"></i>
 							{{ produit.auteur }}
@@ -187,6 +204,59 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- --- Section: Avis des utilisateurs --- -->
+		<div class="mt-5 pt-4 border-top">
+			<h3 class="mb-4">
+				<i class="bi bi-chat-dots-fill"></i>
+				Avis des utilisateurs sur "{{ produit.nom }}"</h3>
+			{% if produit.reviews is not empty and produit.reviews|length > 0 %}
+				{% for review in produit.reviews|sort((a, b) => b.createdAt <=> a.createdAt) %}
+					<div class="card mb-3 shadow-sm">
+						<div class="card-body">
+							<div class="d-flex justify-content-between align-items-start mb-2">
+								<div>
+									<h5 class="card-title mb-0">{{ review.user.nom|default('Utilisateur anonyme') }}</h5>
+									<div class="rating small">
+										{% for i in 1..5 %}
+											<span class="bi bi-star{{ i <= review.rating ? '-fill text-warning' : ' text-muted' }}"></span>
+										{% endfor %}
+										<span class="ms-2 text-muted">({{ review.rating }}/5)</span>
+									</div>
+								</div>
+								<small class="text-muted fs-sm">{{ review.createdAt|date('d/m/Y à H:i') }}</small>
+							</div>
+							{% if review.comment %}
+								<p class="card-text mt-2 mb-0">{{ review.comment|nl2br }}</p>
+							{% else %}
+								<p class="card-text mt-2 mb-0 fst-italic text-muted">Cet utilisateur n'a pas laissé de commentaire.</p>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+			{% else %}
+				<div class="alert alert-light text-center" role="alert">
+					<i class="bi bi-info-circle me-2"></i>
+					Aucun avis pour ce produit pour le moment. Soyez le premier à en laisser un !
+				</div>
+			{% endif %}
+
+			{% if is_granted('ROLE_USER') %}
+				<div class="mt-4 text-center">
+					<a href="{{ path('app_review_add', {'id': produit.id}) }}" class="btn btn-primary btn-lg">
+						<i class="bi bi-pencil-square"></i>
+						Laisser un avis
+					</a>
+				</div>
+			{% else %}
+				<div class="alert alert-info text-center mt-4" role="alert">
+					<i class="bi bi-box-arrow-in-right me-2"></i>
+					<a href="{{ path('app_login') }}">Connectez-vous</a>
+					pour laisser un avis.
+				</div>
+			{% endif %}
+		</div>
+
 	</div>
 
 	<style>
