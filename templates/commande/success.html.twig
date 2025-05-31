@@ -1,0 +1,286 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commande confirmée - BookSaw
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.success-container {
+			background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+			min-height: 100vh;
+			padding: 2rem 0;
+		}
+
+		.success-card {
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: 20px;
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+		}
+
+		.success-icon {
+			width: 80px;
+			height: 80px;
+			background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 2.5rem;
+			margin: 0 auto 1.5rem;
+			animation: successPulse 2s ease-in-out infinite;
+		}
+
+		@keyframes successPulse {
+			0% {
+				transform: scale(1);
+				box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+			}
+			70% {
+				transform: scale(1.05);
+				box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+			}
+			100% {
+				transform: scale(1);
+				box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+			}
+		}
+
+		.order-details {
+			background: #f8f9ff;
+			border-radius: 15px;
+			border: 2px solid #e8ecff;
+		}
+
+		.action-buttons .btn {
+			border-radius: 10px;
+			font-weight: 600;
+			transition: all 0.3s ease;
+		}
+
+		.btn-primary {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border: none;
+			box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+		}
+
+		.btn-primary:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+		}
+
+		.btn-outline-primary {
+			border: 2px solid #667eea;
+			color: #667eea;
+		}
+
+		.btn-outline-primary:hover {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border-color: #667eea;
+			transform: translateY(-2px);
+		}
+
+		.article-item {
+			border-bottom: 1px solid #e8ecff;
+			transition: all 0.3s ease;
+		}
+
+		.article-item:hover {
+			background: rgba(102, 126, 234, 0.05);
+		}
+
+		.confetti {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: -1;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="success-container">
+		<div class="confetti" id="confetti"></div>
+
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-12 col-lg-8">
+					<div
+						class="success-card p-4 p-md-5">
+						<!-- Header Success -->
+						<div class="text-center mb-5">
+							<div class="success-icon">
+								<i class="bi bi-check-lg"></i>
+							</div>
+							<h1 class="h2 mb-3 text-success fw-bold">Paiement réussi !</h1>
+							<p class="lead text-muted mb-4">
+								Merci pour votre commande. Votre paiement a été traité avec succès.
+							</p>
+							<div class="badge bg-success fs-6 px-3 py-2">
+								Commande #{{ commande.id }}
+							</div>
+						</div>
+
+						<!-- Détails de la commande -->
+						<div class="order-details p-4 mb-4">
+							<h4 class="h5 mb-4">
+								<i class="bi bi-receipt text-primary me-2"></i>
+								Détails de votre commande
+							</h4>
+
+							<div class="row mb-4">
+								<div class="col-md-6">
+									<strong>Date de commande:</strong><br>
+									<span class="text-muted">{{ commande.dateCommande|date('d/m/Y à H:i') }}</span>
+								</div>
+								<div class="col-md-6">
+									<strong>Statut de paiement:</strong><br>
+									{{ commande.statutPaiementBadge|raw }}
+								</div>
+							</div>
+
+							<!-- Articles commandés -->
+							<h6 class="fw-bold mb-3">Articles commandés:</h6>
+							{% for article in commande.articles %}
+								<div class="article-item py-3 px-2 rounded">
+									<div class="row align-items-center">
+										<div class="col-8">
+											<h6 class="mb-1 fw-semibold">{{ article.produit.nom }}</h6>
+											<small class="text-muted">
+												{{ article.quantite }}
+												×
+												{{ article.prixUnitaire|number_format(2, ',', ' ') }}
+												dt
+											</small>
+										</div>
+										<div class="col-4 text-end">
+											<span class="fw-bold text-primary">
+												{{ (article.prixUnitaire * article.quantite)|number_format(2, ',', ' ') }}
+												dt
+											</span>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+
+							<hr class="my-4">
+							<div class="d-flex justify-content-between align-items-center">
+								<h5 class="mb-0 fw-bold">Total payé</h5>
+								<h4 class="mb-0 fw-bold text-success">{{ commande.total|number_format(2, ',', ' ') }}
+									dt</h4>
+							</div>
+						</div>
+
+						<!-- Actions -->
+						<div class="action-buttons text-center">
+							<div class="row g-3">
+								<div class="col-12 col-md-6">
+									<a href="{{ path('commande_details', {id: commande.id}) }}" class="btn btn-outline-primary btn-lg w-100">
+										<i class="bi bi-file-text me-2"></i>
+										Voir les détails
+									</a>
+								</div>
+								<div class="col-12 col-md-6">
+									<a href="{{ path('produit_liste') }}" class="btn btn-primary btn-lg w-100">
+										<i class="bi bi-arrow-left me-2"></i>
+										Continuer les achats
+									</a>
+								</div>
+							</div>
+
+							<div class="mt-4">
+								<a href="{{ path('commande_liste') }}" class="btn btn-link text-muted">
+									<i class="bi bi-list-ul me-1"></i>
+									Voir toutes mes commandes
+								</a>
+							</div>
+						</div>
+
+						<!-- Informations supplémentaires -->
+						<div class="mt-5 p-4 bg-light rounded">
+							<h6 class="fw-bold text-primary mb-3">
+								<i class="bi bi-info-circle me-2"></i>
+								Que se passe-t-il maintenant ?
+							</h6>
+							<ul class="list-unstyled mb-0">
+								<li class="mb-2">
+									<i class="bi bi-check-circle-fill text-success me-2"></i>
+									Votre commande a été enregistrée et votre paiement confirmé
+								</li>
+								<li class="mb-2">
+									<i class="bi bi-envelope-fill text-primary me-2"></i>
+									Un email de confirmation vous sera envoyé sous peu
+								</li>
+								<li class="mb-0">
+									<i class="bi bi-truck text-warning me-2"></i>
+									Vous recevrez un email de suivi dès l'expédition de votre commande
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		// Animation confetti simple
+function createConfetti() {
+const confetti = document.getElementById('confetti');
+const colors = [
+'#667eea',
+'#764ba2',
+'#28a745',
+'#20c997',
+'#ffc107'
+];
+
+for (let i = 0; i < 50; i++) {
+const piece = document.createElement('div');
+piece.style.position = 'absolute';
+piece.style.width = '10px';
+piece.style.height = '10px';
+piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+piece.style.left = Math.random() * 100 + '%';
+piece.style.opacity = Math.random();
+piece.style.transform = 'rotate(' + (
+Math.random() * 360
+) + 'deg)';
+piece.style.animation = `fall ${
+Math.random() * 3 + 2
+}s linear infinite`;
+
+confetti.appendChild(piece);
+
+// Supprimer après l'animation
+setTimeout(() => {
+if (piece.parentNode) {
+piece.parentNode.removeChild(piece);
+}
+}, 5000);
+}
+}
+
+// CSS animation for confetti
+const style = document.createElement('style');
+style.textContent = `
+            @keyframes fall {
+                0% { transform: translateY(-100vh) rotate(0deg); }
+                100% { transform: translateY(100vh) rotate(360deg); }
+            }
+        `;
+document.head.appendChild(style);
+
+// Déclencher les confettis
+setTimeout(createConfetti, 500);
+	</script>
+{% endblock %}

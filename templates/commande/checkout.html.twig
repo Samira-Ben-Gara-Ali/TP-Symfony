@@ -1,0 +1,347 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Finaliser la commande - BookSaw
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.checkout-container {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			min-height: 100vh;
+			padding: 2rem 0;
+		}
+
+		.checkout-card {
+			background: rgba(255, 255, 255, 0.95);
+			border-radius: 20px;
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+		}
+
+		.payment-form {
+			background: #f8f9ff;
+			border-radius: 15px;
+			border: 2px solid #e8ecff;
+		}
+
+		#card-element {
+			background: white;
+			padding: 15px;
+			border-radius: 10px;
+			border: 2px solid #e8ecff;
+			transition: all 0.3s ease;
+		}
+
+		#card-element:focus,
+		#card-element.StripeElement--focus {
+			border-color: #667eea;
+			box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+		}
+
+		.pay-button {
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			border: none;
+			color: white;
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			transition: all 0.3s ease;
+			box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+		}
+
+		.pay-button:hover:not(:disabled) {
+			transform: translateY(-2px);
+			box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+		}
+
+		.pay-button:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			transform: none;
+		}
+
+		.order-summary {
+			background: linear-gradient(135deg, #f8f9ff 0%, #e8ecff 100%);
+			border-radius: 15px;
+			border: 1px solid #d0d9ff;
+		}
+
+		.product-item {
+			border-bottom: 1px solid #e8ecff;
+			transition: all 0.3s ease;
+		}
+
+		.product-item:hover {
+			background: rgba(102, 126, 234, 0.05);
+		}
+
+		.loading-spinner {
+			display: none;
+			width: 20px;
+			height: 20px;
+			border: 2px solid #ffffff;
+			border-top: 2px solid transparent;
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+			100% {
+				transform: rotate(360deg);
+			}
+		}
+
+		.secure-badge {
+			background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+			color: white;
+			border-radius: 25px;
+			font-size: 0.85rem;
+			font-weight: 600;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<h1 style="background-color: yellow; color: black; padding: 20px; text-align: center;">
+		DEBUG: CHECKOUT.HTML.TWIG IS RENDERING!
+	</h1>
+	<div class="checkout-container">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-12 col-lg-10">
+					<div
+						class="checkout-card p-4 p-md-5">
+						<!-- Header -->
+						<div class="text-center mb-5">
+							<h1 class="h2 mb-3">
+								<i class="bi bi-credit-card-2-front text-primary me-2"></i>
+								Finaliser votre commande
+							</h1>
+							<div class="secure-badge px-3 py-1 d-inline-block">
+								<i class="bi bi-shield-lock-fill me-1"></i>
+								Paiement 100% sécurisé avec Stripe
+							</div>
+						</div>
+
+						<div
+							class="row">
+							<!-- Résumé de la commande -->
+							<div class="col-12 col-lg-6 mb-4">
+								<div class="order-summary p-4">
+									<h4 class="h5 mb-4">
+										<i class="bi bi-bag-check text-primary me-2"></i>
+										Résumé de votre commande
+									</h4>
+
+									{% for article in articles %}
+										<div class="product-item py-3 px-2 rounded">
+											<div class="row align-items-center">
+												<div class="col-8">
+													<h6 class="mb-1 fw-semibold">{{ article.produit.nom }}</h6>
+													<small class="text-muted">
+														Quantité:
+														{{ article.quantite }}
+													</small>
+												</div>
+												<div class="col-4 text-end">
+													<span class="fw-bold text-primary">
+														{{ (article.produit.prix * article.quantite)|number_format(2, ',', ' ') }}
+														dt
+													</span>
+												</div>
+											</div>
+										</div>
+									{% endfor %}
+
+									<hr class="my-4">
+									<div class="d-flex justify-content-between align-items-center">
+										<h5 class="mb-0 fw-bold">Total</h5>
+										<h4 class="mb-0 fw-bold text-primary">{{ total|number_format(2, ',', ' ') }}
+											dt</h4>
+									</div>
+								</div>
+							</div>
+
+							<!-- Formulaire de paiement -->
+							<div class="col-12 col-lg-6">
+								<div class="payment-form p-4">
+									<h4 class="h5 mb-4">
+										<i class="bi bi-credit-card text-primary me-2"></i>
+										Informations de paiement
+									</h4>
+
+									<form id="payment-form">
+										<div class="mb-4">
+											<label for="card-element" class="form-label fw-semibold">
+												Informations de carte bancaire
+											</label>
+											<div
+												id="card-element"><!-- Stripe Elements va injecter le formulaire ici -->
+											</div>
+											<div id="card-errors" role="alert" class="text-danger mt-2"></div>
+										</div>
+
+										<div class="d-grid gap-2">
+											<button type="submit" id="pay-button" class="btn pay-button btn-lg py-3">
+												<span id="button-text">
+													<i class="bi bi-lock-fill me-2"></i>
+													Payer
+													{{ total|number_format(2, ',', ' ') }}
+													dt
+												</span>
+												<div class="loading-spinner ms-2" id="loading-spinner"></div>
+											</button>
+										</div>
+
+										<div class="text-center mt-4">
+											<small class="text-muted">
+												<i class="bi bi-info-circle me-1"></i>
+												Vos informations sont protégées par le chiffrement SSL
+											</small>
+										</div>
+									</form>
+
+									<!-- Cartes de test pour développement -->
+									{% if app.environment == 'dev' %}
+										<div class="mt-4 p-3 bg-warning bg-opacity-10 border border-warning rounded">
+											<h6 class="text-warning mb-2">
+												<i class="bi bi-exclamation-triangle-fill me-1"></i>
+												Mode test - Cartes de test
+											</h6>
+											<small class="text-muted d-block">
+												<strong>Succès:</strong>
+												4242 4242 4242 4242<br>
+												<strong>Échec:</strong>
+												4000 0000 0000 0002<br>
+												<strong>Date:</strong>
+												Future •
+												<strong>CVC:</strong>
+												123
+											</small>
+										</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://js.stripe.com/v3/"></script>
+	<script>
+		// Initialiser Stripe
+const stripe = Stripe('{{ stripe_public_key }}');
+const elements = stripe.elements();
+
+// Créer l'élément carte avec style personnalisé
+const style = {
+base: {
+color: '#424770',
+fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+fontSmoothing: 'antialiased',
+fontSize: '16px',
+'::placeholder': {
+color: '#aab7c4'
+}
+},
+invalid: {
+color: '#fa755a',
+iconColor: '#fa755a'
+}
+};
+
+const cardElement = elements.create('card', {style: style});
+cardElement.mount('#card-element');
+
+// Gérer les erreurs de carte
+cardElement.on('change', function (event) {
+const displayError = document.getElementById('card-errors');
+if (event.error) {
+displayError.textContent = event.error.message;
+} else {
+displayError.textContent = '';
+}
+});
+
+// Gérer la soumission du formulaire
+const form = document.getElementById('payment-form');
+const payButton = document.getElementById('pay-button');
+const buttonText = document.getElementById('button-text');
+const loadingSpinner = document.getElementById('loading-spinner');
+
+form.addEventListener('submit', async function (event) {
+event.preventDefault();
+
+// Désactiver le bouton et afficher le spinner
+payButton.disabled = true;
+buttonText.style.display = 'none';
+loadingSpinner.style.display = 'inline-block';
+
+try { // Créer le Payment Intent
+const response = await fetch('{{ path('commande_create_payment_intent') }}', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest'
+}
+});
+
+const data = await response.json();
+
+if (! response.ok) {
+throw new Error(data.error || 'Erreur lors de la création du paiement');
+}
+
+// Confirmer le paiement avec Stripe
+const {error, paymentIntent} = await stripe.confirmCardPayment(data.client_secret, {
+payment_method: {
+card: cardElement
+}
+});
+
+if (error) { // Afficher l'erreur
+document.getElementById('card-errors').textContent = error.message;
+resetButton();
+} else if (paymentIntent.status === 'succeeded') { // Confirmer le paiement côté serveur
+const confirmResponse = await fetch (`/commande/confirm-payment/${
+data.commande_id
+}`, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest'
+}
+});
+
+const confirmData = await confirmResponse.json();
+
+if (confirmData.success) { // Rediriger vers la page de succès
+window.location.href = confirmData.redirect_url;
+} else {
+document.getElementById('card-errors').textContent = confirmData.error;
+resetButton();
+}
+}
+} catch (error) {
+document.getElementById('card-errors').textContent = error.message;
+resetButton();
+}
+});
+
+function resetButton() {
+payButton.disabled = false;
+buttonText.style.display = 'inline';
+loadingSpinner.style.display = 'none';
+}
+	</script>
+{% endblock %}

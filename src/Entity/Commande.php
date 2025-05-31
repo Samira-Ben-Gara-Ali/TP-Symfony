@@ -29,10 +29,21 @@ class Commande
     #[ORM\OneToMany(targetEntity: ArticleCommande::class, mappedBy: 'commande', orphanRemoval: true)]
     private Collection $articles;
 
+    #[ORM\Column(length: 50)]
+    private ?string $statut = 'en_attente';
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripePaymentIntentId = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $statutPaiement = 'en_attente';
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
         $this->dateCommande = new \DateTime();
+        $this->statut = 'en_attente';
+        $this->statutPaiement = 'en_attente';
     }
 
     public function getId(): ?int
@@ -97,5 +108,48 @@ class Commande
         }
 
         return $this;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(string $statut): static
+    {
+        $this->statut = $statut;
+        return $this;
+    }
+
+    public function getStripePaymentIntentId(): ?string
+    {
+        return $this->stripePaymentIntentId;
+    }
+
+    public function setStripePaymentIntentId(?string $stripePaymentIntentId): static
+    {
+        $this->stripePaymentIntentId = $stripePaymentIntentId;
+        return $this;
+    }
+
+    public function getStatutPaiement(): ?string
+    {
+        return $this->statutPaiement;
+    }
+
+    public function setStatutPaiement(?string $statutPaiement): static
+    {
+        $this->statutPaiement = $statutPaiement;
+        return $this;
+    }
+
+    public function getStatutPaiementBadge(): string
+    {
+        return match ($this->statutPaiement) {
+            'paye' => '<span class="badge bg-success">Payé</span>',
+            'echoue' => '<span class="badge bg-danger">Échec</span>',
+            'rembourse' => '<span class="badge bg-warning">Remboursé</span>',
+            default => '<span class="badge bg-secondary">En attente</span>'
+        };
     }
 }

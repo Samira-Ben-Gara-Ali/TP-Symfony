@@ -167,9 +167,13 @@
 
 								<!-- Actions -->
 								<div class="d-grid gap-2">
-									<a href="{{ path('commande_finaliser') }}" class="btn btn-primary btn-lg">
+									<a href="{{ path('commande_checkout') }}" class="btn btn-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; font-weight: 600;">
+										<i class="bi bi-credit-card-2-front me-2"></i>
+										Payer avec Stripe
+									</a>
+									<a href="{{ path('commande_finaliser') }}" class="btn btn-outline-primary btn-lg">
 										<i class="bi bi-credit-card"></i>
-										Passer la commande
+										Commande sans paiement
 									</a>
 									<a href="{{ path('produit_liste') }}" class="btn btn-outline-secondary">
 										<i class="bi bi-arrow-left"></i>
