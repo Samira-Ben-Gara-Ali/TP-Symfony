@@ -1,4 +1,4 @@
-# 📧 BookSaw Mailer Setup Guide
+# BookSaw Mailer Setup Guide
 
 This project uses [Symfony Mailer](https://symfony.com/doc/current/mailer.html) to send emails (welcome, invoice/facture, etc.).
 

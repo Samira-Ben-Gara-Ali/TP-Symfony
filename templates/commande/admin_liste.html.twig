@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Commandes
+{% endblock %}
+
+{% block body %}
+	<div class="container py-5">
+		<h1 class="mb-4">Gestion des Commandes</h1>
+		<table class="table table-striped table-hover align-middle">
+			<thead class="table-dark">
+				<tr>
+					<th>ID</th>
+					<th>Utilisateur</th>
+					<th>Date</th>
+					<th>Total</th>
+					<th>Statut</th>
+					<th>Paiement</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for commande in commandes %}
+					<tr>
+						<td>{{ commande.id }}</td>
+						<td>{{ commande.utilisateur ? commande.utilisateur.nom : 'N/A' }}</td>
+						<td>{{ commande.dateCommande ? commande.dateCommande|date('d/m/Y H:i') : '' }}</td>
+						<td>{{ commande.total }}
+							dt</td>
+						<td>{{ commande.statut|capitalize }}</td>
+						<td>{{ commande.statutPaiement|capitalize }}</td>
+						<td>
+							<a href="{{ path('commande_details', {'id': commande.id}) }}" class="btn btn-sm btn-primary">
+								<i class="bi bi-eye"></i>
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="mt-4">
+			{{ knp_pagination_render(commandes) }}
+		</div>
+	</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-# 🚀 Configuration Stripe pour BookSaw
+## Configuration Stripe pour BookSaw
 
 ## Prérequis
 Cette application utilise Stripe pour les paiements. Voici comment configurer votre environnement de test.
@@ -42,13 +42,13 @@ DATABASE_URL="mysql://root:password@127.0.0.1:3306/commerce_db"
 4000 0000 0000 0002
 ```
 
-## 🔒 Sécurité
+## Sécurité
 
 - Le fichier `.env.local` est ignoré par Git
 - Ne committez JAMAIS de vraies clés
 - En production, utilisez les variables d'environnement du serveur
 
-## ❗ Dépannage
+##Dépannage
 
 Si les paiements ne fonctionnent pas :
 1. Vérifiez que vos clés commencent par `pk_test_` et `sk_test_`

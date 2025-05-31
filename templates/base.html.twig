@@ -786,7 +786,7 @@
 										</a>
 									</li>
 									<li>
-										<a class="dropdown-item" href="{{ path('commande_liste') }}">
+										<a class="dropdown-item" href="{{ path('commande_admin_liste') }}">
 											<i class="bi bi-receipt"></i>
 											Gestion Commandes
 										</a>
@@ -807,21 +807,26 @@
 											<i class="bi bi-person-fill me-2"></i>Mon Profil
 										</a>
 									</li>
+									<li>
+										<a class="dropdown-item" href="{{ path('commande_liste') }}">
+											<i class="bi bi-receipt me-2"></i>Mes Commandes
+										</a>
+									</li>
 									{% if is_granted('ROLE_ADMIN') %}
 										<li><hr class="dropdown-divider"></li>
 										<li class="dropdown-header">Administration</li>
 										<li>
-											<a class="dropdown-item" href="{{ path('admin_produits') }}">
+											<a class="dropdown-item" href="{{ path('produit_admin_liste') }}">
 												<i class="bi bi-book-fill me-2"></i>Gérer Produits
 											</a>
 										</li>
 										<li>
-											<a class="dropdown-item" href="{{ path('admin_categories') }}">
+											<a class="dropdown-item" href="{{ path('categorie_liste') }}">
 												<i class="bi bi-tags-fill me-2"></i>Gérer Catégories
 											</a>
 										</li>
 										<li>
-											<a class="dropdown-item" href="{{ path('admin_commandes') }}">
+											<a class="dropdown-item" href="{{ path('commande_admin_liste') }}">
 												<i class="bi bi-receipt-cutoff me-2"></i>Gérer Commandes
 											</a>
 										</li>

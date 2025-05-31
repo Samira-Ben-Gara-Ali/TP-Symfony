@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/commande')]
 #[IsGranted('ROLE_USER')]
@@ -284,13 +285,32 @@ final class CommandeController extends AbstractController
     {
         $utilisateur = $this->security->getUser();
 
-        if (!$utilisateur || $commande->getUtilisateur() !== $utilisateur) {
+        if (!$utilisateur || ($commande->getUtilisateur() !== $utilisateur && !in_array('ROLE_ADMIN', $utilisateur->getRoles()))) {
             $this->addFlash('error', 'Vous n\'êtes pas autorisé à voir cette commande.');
             return $this->redirectToRoute('commande_liste');
         }
 
         return $this->render('commande/details.html.twig', [
             'commande' => $commande,
+        ]);
+    }
+
+    #[Route('/admin/liste', name: 'commande_admin_liste')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function adminListe(Request $request, EntityManagerInterface $entityManager, PaginatorInterface $paginator): Response
+    {
+        $repository = $entityManager->getRepository(Commande::class);
+        $queryBuilder = $repository->createQueryBuilder('c')
+            ->orderBy('c.dateCommande', 'DESC');
+
+        $commandes = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('commande/admin_liste.html.twig', [
+            'commandes' => $commandes
         ]);
     }
 }
