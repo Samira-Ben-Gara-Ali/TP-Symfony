@@ -672,6 +672,58 @@
 					border-color: #b02a37 !important;
 					color: #ffffff !important;
 				}
+
+				/* ANIMATION GRADIENT OR/BLANC POUR LE LOGO */
+				.gradient-logo {
+					background: linear-gradient(90deg, #ffffff 5%, #ffd700 15%, #b8860b 25%, #8b4513 35%, #ffd700 45%, #ffed4e 50%, #b8860b 55%, #ffffff 65%, #a0522d 75%, #ffd700 85%, #ffffff 95%);
+					-webkit-background-clip: text;
+					background-clip: text;
+					color: transparent;
+					background-size: 400% auto;
+					animation: logo-shine 50s linear infinite;
+					font-weight: 700 !important;
+					text-shadow: none !important;
+				}
+
+				@keyframes logo-shine {
+					0% {
+						background-position: 0 center;
+					}
+					100% {
+						background-position: 400% center;
+					}
+				}
+
+				/* S'assurer que l'icône du logo reste visible */
+				.navbar-brand i {
+					color: #ffd700 !important;
+					text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+					animation: icon-glow 3s ease-in-out infinite alternate;
+				}
+
+				@keyframes icon-glow {
+					0% {
+						color: #ffd700 !important;
+						text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+					}
+					50% {
+						color: #b8860b !important;
+						text-shadow: 0 0 15px rgba(184, 134, 11, 0.7);
+					}
+					100% {
+						color: #ffed4e !important;
+						text-shadow: 0 0 20px rgba(255, 237, 78, 0.8);
+					}
+				}
+
+				/* Effet hover sur le logo */
+				.navbar-brand:hover .gradient-logo {
+					animation-duration: 8s;
+				}
+
+				.navbar-brand:hover i {
+					animation-duration: 1s;
+				}
 		</style>
 	</head>
 
@@ -681,9 +733,9 @@
 		<!-- Navigation principale -->
 		<nav class="navbar navbar-expand-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 			<div class="container">
-				<a class="navbar-brand fw-bold text-white fs-3" href="{{ path('home') }}">
-					<i class="bi bi-book-half"></i>
-					BookSaw
+				<a class="navbar-brand fw-bold fs-3" href="{{ path('home') }}">
+					<i class="bi bi-book-half me-2"></i>
+					<span class="gradient-logo">BookSaw</span>
 				</a>
 
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
