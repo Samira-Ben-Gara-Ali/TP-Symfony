@@ -1,63 +1,218 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	Détails du Produit
+	{{ produit.nom }}
+	- BookSaw
 {% endblock %}
 
 {% block body %}
-	<div class="container mt-5">
-		<h2 class="mb-4">Détails du Produit :
-			{{ produit.nom }}</h2>
+	<!-- Breadcrumb -->
+	<nav aria-label="breadcrumb" class="bg-light py-3">
+		<div class="container">
+			<ol class="breadcrumb mb-0">
+				<li class="breadcrumb-item">
+					<a href="{{ path('home') }}" class="text-decoration-none">
+						<i class="bi bi-house"></i>
+						Accueil
+					</a>
+				</li>
+				<li class="breadcrumb-item">
+					<a href="{{ path('produit_liste') }}" class="text-decoration-none">Livres</a>
+				</li>
+				{% if produit.categorie %}
+					<li class="breadcrumb-item">
+						<a href="{{ path('produit_liste') }}?categorie={{ produit.categorie.id }}" class="text-decoration-none">{{ produit.categorie.nom }}</a>
+					</li>
+				{% endif %}
+				<li class="breadcrumb-item active" aria-current="page">{{ produit.nom }}</li>
+			</ol>
+		</div>
+	</nav>
 
-		<div class="card mb-3" style="max-width: 540px;">
-			<div class="row g-0">
-				<div class="col-md-4">
-					{% if produit.imageUrl %}
-						<img src="{{ asset(produit.imageUrl) }}" alt="{{ produit.nom }}" class="img-fluid rounded-start">
-					{% else %}
-						<img src="{{ asset('assets/images/default.png') }}" alt="Pas d'image disponible" class="img-fluid rounded-start">
-					{% endif %}
-				</div>
-				<div class="col-md-8">
-					<div class="card-body">
-						<h5 class="card-title">{{ produit.nom }}</h5>
-						<p class="card-text">
-							<strong>Description :</strong>
-							{{ produit.description }}</p>
-						<p class="card-text">
-							<strong>Prix :</strong>
-							{{ produit.prix }}
-							dt</p>
-						<p class="card-text ">
-							<strong>Auteur :</strong>
-							{{ produit.auteur }}</p>
-						<p class="card-text">
-							<strong>Quantité disponible :</strong>
-							{{ produit.quantite }}</p>
-						<p class="card-text">
-							<strong>État :</strong>
-							{{ produit.etat }}</p>
-
-						{% if produit.categorie %}
-							<p class="card-text">
-								<strong>Catégorie :</strong>
-								{{ produit.categorie.nom }}</p>
+	<div class="container py-5">
+		<div
+			class="row g-5">
+			<!-- Image du produit -->
+			<div class="col-md-6">
+				<div class="sticky-top" style="top: 100px;">
+					<div class="product-image-container">
+						{% if produit.imageUrl %}
+							<img src="{{ asset(produit.imageUrl) }}" alt="{{ produit.nom }}" class="img-fluid rounded shadow-sm w-100" style="max-height: 600px; object-fit: cover;">
 						{% else %}
-							<p class="card-text">
-								<strong>Catégorie :</strong>
-								Non définie</p>
+							<img src="{{ asset('assets/images/default.png') }}" alt="Pas d'image disponible" class="img-fluid rounded shadow-sm w-100" style="max-height: 600px; object-fit: cover;">
 						{% endif %}
+					</div>
+				</div>
+			</div>
 
+			<!-- Détails du produit -->
+			<div class="col-md-6">
+				<div
+					class="product-details">
+					<!-- Titre et catégorie -->
+					<div class="mb-3">
+						{% if produit.categorie %}
+							<span class="badge bg-primary-subtle text-primary mb-2">
+								<i class="bi bi-bookmark"></i>
+								{{ produit.categorie.nom }}
+							</span>
+						{% endif %}
+						<h1 class="display-5 fw-bold mb-2">{{ produit.nom }}</h1>
+						<p class="text-muted fs-5 mb-0">
+							<i class="bi bi-person"></i>
+							{{ produit.auteur }}
+						</p>
+					</div>
+
+					<!-- Prix -->
+					<div class="price-section bg-light p-4 rounded mb-4">
+						<div class="d-flex align-items-center justify-content-between">
+							<div>
+								<span class="h2 text-primary fw-bold mb-0">{{ produit.prix }}
+									dt</span>
+								<div class="small text-muted mt-1">
+									<i class="bi bi-truck"></i>
+									Livraison gratuite dès 50dt
+								</div>
+							</div>
+							<div class="text-end">
+								{% if produit.quantite > 0 %}
+									<span class="badge bg-success-subtle text-success">
+										<i class="bi bi-check-circle"></i>
+										En stock
+									</span>
+									<div class="small text-muted mt-1">{{ produit.quantite }}
+										exemplaires disponibles</div>
+								{% else %}
+									<span class="badge bg-danger-subtle text-danger">
+										<i class="bi bi-x-circle"></i>
+										Rupture de stock
+									</span>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+
+					<!-- Description -->
+					<div class="description-section mb-4">
+						<h5 class="fw-bold mb-3">
+							<i class="bi bi-card-text"></i>
+							Description
+						</h5>
+						<p class="text-muted lh-lg">{{ produit.description }}</p>
+					</div>
+
+					<!-- Informations supplémentaires -->
+					<div class="info-section mb-4">
+						<h6 class="fw-bold mb-3">
+							<i class="bi bi-info-circle"></i>
+							Informations
+						</h6>
+						<div class="row g-3">
+							<div class="col-6">
+								<div class="info-item p-3 bg-light rounded">
+									<i class="bi bi-bookmark text-primary"></i>
+									<div class="ms-2">
+										<div class="small text-muted">État</div>
+										<div class="fw-semibold">{{ produit.etat|title }}</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="info-item p-3 bg-light rounded">
+									<i class="bi bi-calendar-plus text-success"></i>
+									<div class="ms-2">
+										<div class="small text-muted">Ajouté le</div>
+										<div class="fw-semibold">{{ produit.dateAjout|date('d/m/Y') }}</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Actions d'achat -->
+					{% if produit.quantite > 0 %}
+						<div class="purchase-section border rounded p-4 mb-4">
+							<form action="{{ path('panier_ajouter', {'id': produit.id}) }}" method="post" class="mb-3">
+								<div class="row g-3 align-items-end">
+									<div class="col-4">
+										<label for="quantite" class="form-label fw-semibold">Quantité</label>
+										<input type="number" name="quantite" id="quantite" value="1" min="1" max="{{ produit.quantite }}" class="form-control form-control-lg text-center">
+									</div>
+									<div class="col-8">
+										<button type="submit" class="btn btn-primary btn-lg w-100">
+											<i class="bi bi-cart-plus"></i>
+											Ajouter au panier
+										</button>
+									</div>
+								</div>
+							</form>
+							<div class="d-grid gap-2">
+								<a href="{{ path('produit_liste') }}" class="btn btn-outline-secondary">
+									<i class="bi bi-arrow-left"></i>
+									Continuer mes achats
+								</a>
+							</div>
+						</div>
+					{% else %}
+						<div class="purchase-section border rounded p-4 mb-4 text-center">
+							<i class="bi bi-exclamation-triangle text-warning fs-2 mb-3"></i>
+							<h6 class="text-muted mb-3">Ce produit n'est actuellement pas disponible</h6>
+							<a href="{{ path('produit_liste') }}" class="btn btn-outline-primary">
+								<i class="bi bi-arrow-left"></i>
+								Voir d'autres livres
+							</a>
+						</div>
+					{% endif %}
+
+					<!-- Garanties et services -->
+					<div class="services-section">
+						<div class="row g-3 text-center">
+							<div class="col-6">
+								<div class="service-item p-3">
+									<i class="bi bi-shield-check text-success fs-4 mb-2"></i>
+									<div class="small fw-semibold">Paiement sécurisé</div>
+									<div class="tiny text-muted">SSL & Stripe</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<div class="service-item p-3">
+									<i class="bi bi-arrow-clockwise text-info fs-4 mb-2"></i>
+									<div class="small fw-semibold">Retour 30 jours</div>
+									<div class="tiny text-muted">Satisfaction garantie</div>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<form action="{{ path('panier_ajouter', {'id': produit.id}) }}" method="post">
-			<label for="quantite">Quantité :</label>
-			<input type="number" name="quantite" value="1" min="1">
-			<button type="submit" class="btn btn-primary rounded">Ajouter au panier</button>
-		</form>
-		<a href="{{ path('produit_liste') }}" class="btn btn-secondary rounded">Retour à la liste</a>
 	</div>
+
+	<style>
+		.info-item {
+			display: flex;
+			align-items: center;
+		}
+		.service-item {
+			transition: transform 0.2s;
+		}
+		.service-item:hover {
+			transform: translateY(-2px);
+		}
+		.tiny {
+			font-size: 0.75rem;
+		}
+		.product-image-container {
+			position: relative;
+			overflow: hidden;
+			border-radius: 0.5rem;
+		}
+		.product-image-container img {
+			transition: transform 0.3s ease;
+		}
+		.product-image-container:hover img {
+			transform: scale(1.05);
+		}
+	</style>
 {% endblock %}

@@ -87,323 +87,316 @@
 				overflow: hidden;
 				border-top: 1px solid #dee2e6;
 			}
+			/* Alignement des icônes dans les boutons */
+			.btn i {
+				vertical-align: middle;
+			}
+
+			/* Styles pour le footer */
+			.footer-link:hover {
+				color: #ffffff !important;
+				transition: color 0.3s ease;
+			}
+
+			.footer-link:hover {
+				transform: translateX(5px);
+				transition: all 0.3s ease;
+			}
+
+			footer .social-links a:hover {
+				color: var(--bs-primary) !important;
+				transform: scale(1.1);
+				transition: all 0.3s ease;
+			}
 		</style>
 	</head>
 
-	<body data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
+	<body
+		data-bs-spy="scroll" data-bs-target="#header" tabindex="0">
 
+		<!-- Navigation principale -->
+		<nav class="navbar navbar-expand-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+			<div class="container">
+				<a class="navbar-brand fw-bold text-white fs-3" href="{{ path('home') }}">
+					<i class="bi bi-book-half"></i>
+					BookSaw
+				</a>
 
-		<div id="header-wrap">
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+					<span class="navbar-toggler-icon"></span>
+				</button>
 
-			<div class="top-content">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-md-6"></div>
-						<div class="col-md-6">
-							<nav id="navbar">
-								<div class="main-menu stellarnav">
-									<ul class="menu-list">
+				<div class="collapse navbar-collapse" id="navbarNav">
+					<ul class="navbar-nav ms-auto align-items-center">
+						<li class="nav-item">
+							<a class="nav-link text-white" href="{{ path('home') }}">
+								<i class="bi bi-house"></i>
+								Accueil
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link text-white" href="{{ path('produit_liste') }}">
+								<i class="bi bi-collection"></i>
+								Produits
+							</a>
+						</li>
 
+						{% if is_granted('ROLE_ADMIN') %}
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+									<i class="bi bi-gear"></i>
+									Administration
+								</a>
+								<ul class="dropdown-menu">
+									<li>
+										<a class="dropdown-item" href="{{ path('produit_admin_liste') }}">
+											<i class="bi bi-box"></i>
+											Gestion Produits
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="{{ path('categorie_liste') }}">
+											<i class="bi bi-tags"></i>
+											Gestion Catégories
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item" href="{{ path('commande_liste') }}">
+											<i class="bi bi-receipt"></i>
+											Gestion Commandes
+										</a>
+									</li>
+								</ul>
+							</li>
+						{% endif %}
 
-										<li class="menu-item has-sub">
-											<a href="#" class="nav-link">Account</a>
-											<ul>
-												{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-													<li>
-														<a href="{{ path('app_logout') }}">
-															<i class="icon icon-user"></i>
-															<span>Logout</span>
-														</a>
-													</li>
-												{% else %}
-													<li>
-														<a href="{{ path('app_login') }}">
-															<i class="icon icon-user"></i>
-															<span>Login</span>
-														</a>
-													</li>
-													<li>
-														<a href="{{ path('app_register') }}">
-															<i class="icon icon-user"></i>
-															<span>Register</span>
-														</a>
-													</li>
-												{% endif %}
-											</ul>
-										</li>
-										{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+						{% if app.user %}
+							<li class="nav-item">
+								<a class="nav-link text-white position-relative" href="{{ path('panier_index') }}">
+									<i class="bi bi-cart3"></i>
+									Panier
+									{% if app.session.get('panier') %}
+										<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+											{{ app.session.get('panier')|length }}
+										</span>
+									{% endif %}
+								</a>
+							</li>
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+									<i class="bi bi-person-circle"></i>
+									{{ app.user.email }}
+								</a>
+								<ul class="dropdown-menu">
+									<li>
+										<a class="dropdown-item" href="{{ path('commande_liste') }}">
+											<i class="bi bi-list-ul"></i>
+											Mes commandes
+										</a>
+									</li>
+									<li>
+										<hr class="dropdown-divider">
+									</li>
+									<li>
+										<a class="dropdown-item" href="{{ path('app_logout') }}">
+											<i class="bi bi-box-arrow-right"></i>
+											Déconnexion
+										</a>
+									</li>
+								</ul>
+							</li>
+						{% else %}
+							<li class="nav-item">
+								<a class="nav-link text-white" href="{{ path('app_login') }}">
+									<i class="bi bi-box-arrow-in-right"></i>
+									Connexion
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link text-white" href="{{ path('app_register') }}">
+									<i class="bi bi-person-plus"></i>
+									Inscription
+								</a>
+							</li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>
+		</nav>
 
-											<li class="menu-item">
-												<a href="{{path('panier_index') }}" class="cart for-buy">
-													<i class="icon icon-clipboard"></i>
-													<span>Panier</span>
-												</a>
-											</li>
-										{% endif %}
-									</ul>
-									<div class="hamburger">
-										<span class="bar"></span>
-										<span class="bar"></span>
-										<span class="bar"></span>
-									</div>
-								</div>
-							</nav>
+		<main>
+			<!-- Messages flash -->
+			{% for type, messages in app.flashes %}
+				{% for message in messages %}
+					<div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show mb-0" role="alert">
+						{{ message }}
+						<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+					</div>
+				{% endfor %}
+			{% endfor %}
+
+			{% block body %}{% endblock %}
+		</main>
+
+		<!-- Footer moderne -->
+		<footer class="bg-dark text-light py-5 mt-auto">
+			<div class="container">
+				<div class="row g-4">
+					<div class="col-lg-4 col-md-6">
+						<h5 class="fw-bold mb-3">
+							<i class="bi bi-book-half text-primary"></i>
+							BookSaw
+						</h5>
+						<p class="text-white-50">Votre librairie en ligne de référence en Tunisie. Découvrez des milliers de livres dans tous les genres.</p>
+						<div class="d-flex gap-3 social-links">
+							<a href="#" class="text-light">
+								<i class="bi bi-facebook fs-4"></i>
+							</a>
+							<a href="#" class="text-light">
+								<i class="bi bi-instagram fs-4"></i>
+							</a>
+							<a href="#" class="text-light">
+								<i class="bi bi-twitter fs-4"></i>
+							</a>
 						</div>
-
+					</div>
+					<div class="col-lg-2 col-md-6">
+						<h6 class="fw-bold mb-3 text-white">Navigation</h6>
+						<ul class="list-unstyled">
+							<li class="mb-2">
+								<a href="{{ path('home') }}" class="text-white-50 text-decoration-none footer-link">Accueil</a>
+							</li>
+							<li class="mb-2">
+								<a href="{{ path('produit_liste') }}" class="text-white-50 text-decoration-none footer-link">Produits</a>
+							</li>
+							<li class="mb-2">
+								<a href="#" class="text-white-50 text-decoration-none footer-link">À propos</a>
+							</li>
+							<li class="mb-2">
+								<a href="#" class="text-white-50 text-decoration-none footer-link">Contact</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<h6 class="fw-bold mb-3 text-white">Catégories</h6>
+						<ul class="list-unstyled">
+							<li class="mb-2">
+								<a href="#" class="text-white-50 text-decoration-none footer-link">Fiction</a>
+							</li>
+							<li class="mb-2">
+								<a href="#" class="text-white-50 text-decoration-none footer-link">Science-Fiction</a>
+							</li>
+							<li class="mb-2">
+								<a href="#" class="text-white-50 text-decoration-none footer-link">Histoire</a>
+							</li>
+							<li class="mb-2">
+								<a href="#" class="text-white-50 text-decoration-none footer-link">Biographie</a>
+							</li>
+						</ul>
+					</div>
+					<div class="col-lg-3 col-md-6">
+						<h6 class="fw-bold mb-3 text-white">Contact</h6>
+						<ul class="list-unstyled text-white-50">
+							<li class="mb-2">
+								<i class="bi bi-geo-alt me-2"></i>
+								Tunis, Tunisie
+							</li>
+							<li class="mb-2">
+								<i class="bi bi-telephone me-2"></i>
+								+216 XX XXX XXX
+							</li>
+							<li class="mb-2">
+								<i class="bi bi-envelope me-2"></i>
+								contact@booksaw.tn
+							</li>
+						</ul>
+					</div>
+				</div>
+				<hr class="my-4 border-secondary">
+				<div class="row align-items-center">
+					<div class="col-md-6">
+						<p class="text-white-50 mb-0">&copy; 2024 BookSaw. Tous droits réservés.</p>
+					</div>
+					<div class="col-md-6 text-md-end">
+						<a href="#" class="text-white-50 text-decoration-none footer-link me-3">Politique de confidentialité</a>
+						<a href="#" class="text-white-50 text-decoration-none footer-link">Conditions d'utilisation</a>
 					</div>
 				</div>
 			</div>
-			<!--top-content-->
-			<header id="header">
-				<div class="container-fluid">
-					<div class="row">
+		</footer>
 
-						<div class="col-md-2">
-							<div class="main-logo">
-								<a href="{{ path('home') }}"><img src="{{ asset('assets/images/main-logo.png') }}" alt="logo"></a>
-							</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-						</div>
+		<!-- Styles globaux pour corriger les alignements -->
+		<style>
+			/* Correction générale des alignements boutons/inputs */
+			.input-group {
+				display: flex;
+				align-items: stretch;
+			}
 
-						<div class="col-md-10">
+			.input-group .form-control {
+				display: flex;
+				align-items: center;
+			}
 
-							<nav id="navbar">
-								<div class="main-menu stellarnav">
-									<ul class="menu-list">
-										<li class="menu-item">
-											<a href="{{ path('home') }}">Accueil</a>
-										</li>
-										{% if is_granted('ROLE_ADMIN') %}
-											<!-- DEBUG: ADMIN MENU VISIBLE -->
-											<li class="menu-item has-sub dropdown">
-												<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false">Administration</a>
-												<ul class="dropdown-menu">
-													<li>
-														<a class="dropdown-item" href="{{ path('produit_admin_liste') }}">Liste des produits</a>
-													</li>
-													<li>
-														<a class="dropdown-item" href="{{ path('categorie_liste') }}">Liste des catégories</a>
-													</li>
-													<li><hr class="dropdown-divider"></li>
-													<li>
-														<a class="dropdown-item" href="{{ path('produit_new') }}">Ajouter un produit</a>
-													</li>
-													<li>
-														<a class="dropdown-item" href="{{ path('categorie_new') }}">Ajouter une catégorie</a>
-													</li>
-												</ul>
-											</li>
-											{% else %}
-											<!-- DEBUG: NO ADMIN ROLE -->
-										{% endif %}
-										<li class="menu-item">
-											<a href="{{path('produit_liste')}}" class="nav-link">Produits</a>
-										</li>
-										{% if is_granted('IS_AUTHENTICATED_FULLY') %}
-											<li class="menu-item">
-												<a href="{{path('commande_liste')}}" class="nav-link">Mes Commandes</a>
-											</li>
-										{% endif %}
-									</ul>
-									<div class="hamburger">
-										<span class="bar"></span>
-										<span class="bar"></span>
-										<span class="bar"></span>
-									</div>
-								</div>
-							</nav>
-						</div>
-					</div>
-				</div>
-			</header>
-			<main class="container mt-5">
+			.input-group .btn {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				border-left: 0;
+				margin-top: 0 !important;
+			}
 
-				{% for label, messages in app.flashes %}
-					<div class="alert alert-{{ label }} alert-dismissible fade show mt-2" role="alert">
-						{% for message in messages %}
-							{{ message }}
-						{% endfor %}
-						<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-					</div>
-				{% endfor %}
+			.input-group .form-control:focus + .btn {
+				border-color: #86b7fe;
+			}
 
-				{% block body %}{% endblock %}
-			</main>
+			/* Correction pour les formulaires flexbox */
+			.d-flex.align-items-stretch .form-control {
+				display: flex;
+				align-items: center;
+			}
 
+			.d-flex.align-items-stretch .btn {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-top: 0 !important;
+			}
 
-			<!-- Footer -->
-			<footer class="bg-dark text-white py-5 mt-5">
-				<div class="container">
-					<div
-						class="row g-4">
-						<!-- À propos -->
-						<div class="col-lg-3 col-md-6">
-							<h5 class="mb-3">BookSaw</h5>
-							<p class="mb-3">Votre librairie en ligne de confiance depuis 2024. Des milliers de livres soigneusement sélectionnés pour tous les goûts.</p>
-							<div class="d-flex gap-3">
-								<a href="#" class="text-white-50 hover-primary">
-									<i class="bi bi-facebook fs-5"></i>
-								</a>
-								<a href="#" class="text-white-50 hover-primary">
-									<i class="bi bi-twitter fs-5"></i>
-								</a>
-								<a href="#" class="text-white-50 hover-primary">
-									<i class="bi bi-instagram fs-5"></i>
-								</a>
-								<a href="#" class="text-white-50 hover-primary">
-									<i class="bi bi-linkedin fs-5"></i>
-								</a>
-							</div>
-						</div>
+			/* Hauteurs cohérentes */
+			.form-control-lg {
+				min-height: calc(1.5em + 1rem + 2px);
+				padding: 0.5rem 1rem;
+			}
 
-						<!-- Liens rapides -->
-						<div class="col-lg-2 col-md-6">
-							<h5 class="mb-3">Navigation</h5>
-							<ul class="list-unstyled">
-								<li class="mb-2">
-									<a href="{{ path('home') }}" class="text-white-50 text-decoration-none">Accueil</a>
-								</li>
-								<li class="mb-2">
-									<a href="{{ path('produit_liste') }}" class="text-white-50 text-decoration-none">Tous les livres</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Nouveautés</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Meilleures ventes</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Promotions</a>
-								</li>
-							</ul>
-						</div>
+			.btn-lg {
+				min-height: calc(1.5em + 1rem + 2px);
+				padding: 0.5rem 1rem;
+			}
 
-						<!-- Service client -->
-						<div class="col-lg-2 col-md-6">
-							<h5 class="mb-3">Service Client</h5>
-							<ul class="list-unstyled">
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Nous contacter</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">FAQ</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Livraison</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Retours</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Suivi commande</a>
-								</li>
-							</ul>
-						</div>
+			/* Correction spécifique pour les boutons dans les formulaires de recherche */
+			form .btn {
+				margin-top: 0 !important;
+			}
 
-						<!-- Informations légales -->
-						<div class="col-lg-2 col-md-6">
-							<h5 class="mb-3">Informations</h5>
-							<ul class="list-unstyled">
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">À propos</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Mentions légales</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">CGV</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Confidentialité</a>
-								</li>
-								<li class="mb-2">
-									<a href="#" class="text-white-50 text-decoration-none">Cookies</a>
-								</li>
-							</ul>
-						</div>
+			/* Correction pour les inputs dans les groupes */
+			.input-group input[type="text"],
+			.input-group input[type="number"],
+			.input-group input[type="email"],
+			.input-group input[type="search"],
+			.input-group select {
+				margin-bottom: 0 !important;
+			}
 
-						<!-- Contact et Newsletter -->
-						<div class="col-lg-3 col-md-6">
-							<h5 class="mb-3">Contact</h5>
-							<div class="mb-3">
-								<p class="mb-1">
-									<i class="bi bi-geo-alt me-2"></i>INSAT Centre Urbain Nord</p>
-								<p class="mb-1">Tunis, Tunisie</p>
-								<p class="mb-1">
-									<i class="bi bi-telephone me-2"></i>+216 71 123 456</p>
-								<p class="mb-3">
-									<i class="bi bi-envelope me-2"></i>contact@booksaw.tn</p>
-							</div>
-
-							<h6 class="mb-2">Newsletter</h6>
-							<p class="small mb-2">Recevez nos dernières nouveautés</p>
-							<form class="d-flex">
-								<input type="email" class="form-control form-control-sm me-2" placeholder="Email">
-								<button class="btn btn-primary btn-sm" type="submit">OK</button>
-							</form>
-						</div>
-					</div>
-
-					<hr
-					class="my-4 border-secondary">
-
-					<!-- Section inférieure -->
-					<div class="row align-items-center">
-						<div class="col-md-6">
-							<p class="mb-2">&copy;
-								{{ "now"|date("Y") }}
-								BookSaw. Tous droits réservés.</p>
-							<div class="d-flex align-items-center gap-3">
-								<span class="small">Paiement sécurisé :</span>
-								<div class="d-flex gap-2">
-									<span class="badge bg-light text-dark px-2 py-1">
-										<i class="bi bi-credit-card"></i>
-										Stripe
-									</span>
-									<span class="badge bg-light text-dark px-2 py-1">
-										<i class="bi bi-shield-check"></i>
-										SSL
-									</span>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-6 text-md-end">
-							<div class="mb-2">
-								<span class="small">Livraison gratuite dès 50dt</span>
-							</div>
-							<div class="d-flex justify-content-md-end gap-2">
-								<span class="badge bg-success">
-									<i class="bi bi-truck"></i>
-									Livraison 24h
-								</span>
-								<span class="badge bg-info">
-									<i class="bi bi-arrow-clockwise"></i>
-									Retour 30j
-								</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</footer>
-
-			<script src="{{ asset('assets/js/jquery-1.11.0.min.js') }}"></script>
-			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-			<script src="{{ asset('assets/js/plugins.js') }}"></script>
-			<script src="{{ asset('assets/js/script.js') }}"></script>
-			{% block javascripts %}
-				<script>
-					document.addEventListener("DOMContentLoaded", function () {
-setTimeout(function () {
-let alerts = document.querySelectorAll('.alert');
-alerts.forEach(function (alert) {
-alert.classList.add('fade');
-setTimeout(() => alert.remove(), 500);
-});
-}, 2000);
-});
-				</script>
-
-			{% endblock %}
-		</body>
+			/* Alignement vertical parfait pour les éléments de formulaire côte à côte */
+			.d-flex .form-control,
+			.d-flex .btn,
+			.d-flex .input-group {
+				margin-top: 0 !important;
+				margin-bottom: 0 !important;
+			}
+		</style>
 	</body>
 </html>

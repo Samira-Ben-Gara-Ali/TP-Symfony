@@ -1,54 +1,277 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon Panier
+{% block title %}
+	Mon Panier - BookSaw
 {% endblock %}
 
 {% block body %}
-	<h1>
-		Mon Panier
-	</h1>
-	{% if articles | length >0 %}
-		<table class="table">
-			<thead>
-				<tr>
-					<th>Produit</th>
-					<th>Prix unitaire</th>
-					<th>Quantité</th>
-					<th>Sous-total</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
+	<!-- Breadcrumb -->
+	<nav aria-label="breadcrumb" class="bg-light py-3">
+		<div class="container">
+			<ol class="breadcrumb mb-0">
+				<li class="breadcrumb-item">
+					<a href="{{ path('home') }}" class="text-decoration-none">
+						<i class="bi bi-house"></i>
+						Accueil
+					</a>
+				</li>
+				<li class="breadcrumb-item">
+					<a href="{{ path('produit_liste') }}" class="text-decoration-none">Livres</a>
+				</li>
+				<li class="breadcrumb-item active" aria-current="page">Mon Panier</li>
+			</ol>
+		</div>
+	</nav>
 
-				{% for article in articles %}
-					<tr>
-						<td>{{ article.produit.nom }}</td>
-						<td>{{ article.produit.prix|number_format(2) }}
-							dt</td>
-						<td>
-							<form action="{{ path('panier_mettre_a_jour', {'id': article.produit.id}) }}" method="post" style="display: inline;">
-								<input type="number" name="quantite" value="{{ article.quantite }}" min="1">
-								<button type="submit" class="btn btn-sm btn-primary">Mettre à jour</button>
-							</form>
-						</td>
-						<td>{{ (article.produit.prix * article.quantite)|number_format(2) }}
-							dt</td>
-						<td>
-							<form action="{{ path('panier_supprimer', {'id': article.produit.id}) }}" method="post" style="display: inline;">
-								<button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
-							</form>
-						</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-		<h3>Total :
-			{{ total|number_format(2) }}
-			dt</h3>
+	<div class="container py-5">
+		<div class="row mb-4">
+			<div class="col-12 text-center">
+				<h1 class="display-4 fw-bold mb-2">
+					<i class="bi bi-cart3 text-primary"></i>
+					Mon Panier
+				</h1>
+				<p class="text-muted">Gérez vos articles avant de finaliser votre commande</p>
+			</div>
+		</div>
 
-		<a href="{{ path('commande_finaliser') }}" class="btn btn-success">Passer la commande</a>
-	{% else %}
-		<p>Votre panier est vide.</p>
-	{% endif %}
-	<a href="{{ path('produit_liste') }}" class="btn btn-primary">Continuer mes achats</a>
+		{% if articles | length > 0 %}
+			<div
+				class="row g-4">
+				<!-- Articles du panier -->
+				<div class="col-lg-8">
+					<div class="card shadow-sm border-0">
+						<div class="card-header bg-white border-0 py-3">
+							<h5 class="card-title mb-0">
+								<i class="bi bi-bag-check text-primary"></i>
+								Articles ({{ articles|length }}
+								{% if articles|length > 1 %}articles{% else %}article
+								{% endif %})
+							</h5>
+						</div>
+						<div class="card-body p-0">
+							{% for article in articles %}
+								<div class="cart-item border-bottom{% if loop.last %} border-0{% endif %} p-4">
+									<div
+										class="row g-3 align-items-center">
+										<!-- Image du produit -->
+										<div class="col-md-2 col-3">
+											<div class="product-image">
+												{% if article.produit.imageUrl %}
+													<img src="{{ asset(article.produit.imageUrl) }}" alt="{{ article.produit.nom }}" class="img-fluid rounded" style="height: 80px; width: 60px; object-fit: cover;">
+												{% else %}
+													<img src="{{ asset('assets/images/default.png') }}" alt="Pas d'image" class="img-fluid rounded" style="height: 80px; width: 60px; object-fit: cover;">
+												{% endif %}
+											</div>
+										</div>
+
+										<!-- Détails du produit -->
+										<div class="col-md-4 col-9">
+											<h6 class="fw-bold mb-1">{{ article.produit.nom }}</h6>
+											<p class="text-muted small mb-1">
+												<i class="bi bi-person"></i>
+												{{ article.produit.auteur }}
+											</p>
+											{% if article.produit.categorie %}
+												<span class="badge bg-light text-dark small">{{ article.produit.categorie.nom }}</span>
+											{% endif %}
+										</div>
+
+										<!-- Prix unitaire -->
+										<div class="col-md-2 col-4 text-center">
+											<div class="text-muted small">Prix unitaire</div>
+											<div class="fw-bold">{{ article.produit.prix|number_format(2) }}
+												dt</div>
+										</div>
+
+										<!-- Quantité -->
+										<div class="col-md-2 col-4">
+											<form action="{{ path('panier_mettre_a_jour', {'id': article.produit.id}) }}" method="post" class="quantity-form">
+												<label class="form-label small text-muted">Quantité</label>
+												<div class="input-group input-group-sm d-flex align-items-stretch">
+													<input type="number" name="quantite" value="{{ article.quantite }}" min="1" class="form-control text-center" style="min-width: 60px;">
+													<button type="submit" class="btn btn-outline-primary d-flex align-items-center justify-content-center" style="width: 36px; height: auto;">
+														<i class="bi bi-arrow-clockwise"></i>
+													</button>
+												</div>
+											</form>
+										</div>
+
+										<!-- Sous-total et actions -->
+										<div class="col-md-2 col-4 text-end">
+											<div class="text-muted small">Sous-total</div>
+											<div class="fw-bold text-primary mb-2">{{ (article.produit.prix * article.quantite)|number_format(2) }}
+												dt</div>
+											<form action="{{ path('panier_supprimer', {'id': article.produit.id}) }}" method="post" class="d-inline">
+												<button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
+													<i class="bi bi-trash"></i>
+												</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+
+				<!-- Résumé de commande -->
+				<div class="col-lg-4">
+					<div class="card shadow-sm border-0 sticky-top" style="top: 100px;">
+						<div class="card-header bg-primary text-white py-3">
+							<h5 class="card-title mb-0">
+								<i class="bi bi-receipt"></i>
+								Résumé de commande
+							</h5>
+						</div>
+						<div class="card-body">
+							<div
+								class="order-summary">
+								<!-- Détail des coûts -->
+								<div class="d-flex justify-content-between mb-2">
+									<span>Sous-total ({{ articles|length }}
+										{% if articles|length > 1 %}articles{% else %}article
+										{% endif %})</span>
+									<span>{{ total|number_format(2) }}
+										dt</span>
+								</div>
+
+								<div class="d-flex justify-content-between mb-2">
+									<span>Livraison</span>
+									<span class="text-success">
+										{% if total >= 50 %}
+											Gratuite
+										{% else %}
+											7.00 dt
+										{% endif %}
+									</span>
+								</div>
+
+								{% if total < 50 %}
+									<div class="alert alert-info small mb-3">
+										<i class="bi bi-info-circle"></i>
+										Ajoutez
+										{{ (50 - total)|number_format(2) }}
+										dt pour bénéficier de la livraison gratuite !
+									</div>
+								{% endif %}
+
+								<hr>
+
+								<div class="d-flex justify-content-between mb-3">
+									<strong>Total</strong>
+									<strong class="text-primary fs-5">
+										{{ total >= 50 ? total|number_format(2) : (total + 7)|number_format(2) }}
+										dt
+									</strong>
+								</div>
+
+								<!-- Actions -->
+								<div class="d-grid gap-2">
+									<a href="{{ path('commande_finaliser') }}" class="btn btn-primary btn-lg">
+										<i class="bi bi-credit-card"></i>
+										Passer la commande
+									</a>
+									<a href="{{ path('produit_liste') }}" class="btn btn-outline-secondary">
+										<i class="bi bi-arrow-left"></i>
+										Continuer mes achats
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Services inclus -->
+					<div class="mt-4">
+						<div class="card border-0 bg-light">
+							<div class="card-body text-center py-4">
+								<h6 class="fw-bold mb-3">Services inclus</h6>
+								<div class="row g-3">
+									<div class="col-6">
+										<i class="bi bi-shield-check text-success fs-4 mb-1"></i>
+										<div class="small">Paiement sécurisé</div>
+									</div>
+									<div class="col-6">
+										<i class="bi bi-arrow-clockwise text-info fs-4 mb-1"></i>
+										<div class="small">Retour 30 jours</div>
+									</div>
+									<div class="col-6">
+										<i class="bi bi-truck text-warning fs-4 mb-1"></i>
+										<div class="small">Livraison rapide</div>
+									</div>
+									<div class="col-6">
+										<i class="bi bi-headset text-primary fs-4 mb-1"></i>
+										<div class="small">Support 7j/7</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{% else %}
+			<!-- Panier vide -->
+			<div class="row justify-content-center">
+				<div class="col-md-6 text-center">
+					<div class="empty-cart py-5">
+						<i class="bi bi-cart-x text-muted mb-4" style="font-size: 5rem;"></i>
+						<h3 class="fw-bold mb-3">Votre panier est vide</h3>
+						<p class="text-muted mb-4">Découvrez notre collection de livres et ajoutez vos favoris à votre panier.</p>
+						<a href="{{ path('produit_liste') }}" class="btn btn-primary btn-lg">
+							<i class="bi bi-search"></i>
+							Découvrir nos livres
+						</a>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	</div>
+
+	<style>
+		.cart-item {
+			transition: background-color 0.2s;
+		}
+		.cart-item:hover {
+			background-color: #f8f9fa;
+		}
+		.quantity-form {
+			max-width: 120px;
+		}
+		/* Correction alignement input-group */
+		.quantity-form .input-group {
+			align-items: stretch;
+		}
+		.quantity-form .input-group .form-control {
+			border-radius: 0.375rem 0 0 0.375rem !important;
+			line-height: 1.5;
+		}
+		.quantity-form .input-group .btn {
+			border-radius: 0 0.375rem 0.375rem 0 !important;
+			padding: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 31px;
+		}
+		.product-image img {
+			transition: transform 0.2s;
+		}
+		.product-image:hover img {
+			transform: scale(1.05);
+		}
+		.order-summary {
+			line-height: 1.6;
+		}
+		/* Général : correction alignement des boutons avec inputs */
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.input-group .btn {
+			border-left: 0;
+		}
+		.input-group .form-control:focus + .btn {
+			border-color: #86b7fe;
+		}
+	</style>
 {% endblock %}
