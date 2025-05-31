@@ -69,7 +69,7 @@ final class ProduitController extends AbstractController
         $produits = $paginator->paginate(
             $queryBuilder,
             $request->query->getInt('page', 1),
-            6,
+            8,
             [
                 'sortFieldParameterName' => null,
                 'sortDirectionParameterName' => null
@@ -152,7 +152,7 @@ final class ProduitController extends AbstractController
         $produits = $paginator->paginate(
             $queryBuilder->getQuery(),
             $request->query->getInt('page', 1),
-            6
+            8
         );
 
         return $this->render('produit/liste_admin.html.twig', [
