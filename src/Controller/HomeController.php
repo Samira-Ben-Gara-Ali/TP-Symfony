@@ -19,17 +19,14 @@ final class HomeController extends AbstractController
     #[Route('/home', name: 'home')]
     public function index(ProduitRepository $produitRepository, CategorieRepository $categorieRepository): Response
     {
-        // Récupérer les derniers produits ajoutés (nouveautés)
-        $nouveautes = $produitRepository->findBy([], ['dateAjout' => 'DESC'], 4);
-
-        // Récupérer quelques produits aléatoires comme "meilleures ventes"
-        $meilleuresVentes = $produitRepository->findBy([], ['id' => 'ASC'], 4);
-
-        // Récupérer toutes les catégories
+        $featuredProduct = $produitRepository->findOneBy([], ['dateAjout' => 'DESC']);
+        $newArrivals = $produitRepository->findBy([], ['dateAjout' => 'DESC'], 8);
+        $meilleuresVentes = $newArrivals;
         $categories = $categorieRepository->findAll();
 
         return $this->render('home/index.html.twig', [
-            'nouveautes' => $nouveautes,
+            'featuredProduct' => $featuredProduct,
+            'newArrivals' => $newArrivals,
             'meilleuresVentes' => $meilleuresVentes,
             'categories' => $categories,
         ]);
