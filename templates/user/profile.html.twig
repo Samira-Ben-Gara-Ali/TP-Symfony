@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil - BookSaw
+{% endblock %}
+
+{% block body %}
+	<div class="container my-5">
+		<div class="row justify-content-center">
+			<div class="col-md-8 col-lg-6">
+				<div class="card shadow-sm">
+					<div class="card-header bg-primary text-white">
+						<h1 class="mb-0 h4">Modifier mon profil</h1>
+					</div>
+					<div class="card-body p-4">
+						{% for type, messages in app.flashes %}
+							{% for message in messages %}
+								<div class="alert alert-{{ type == 'error' ? 'danger' : type }} alert-dismissible fade show" role="alert">
+									{{ message }}
+									<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+								</div>
+							{% endfor %}
+						{% endfor %}
+
+						{{ form_start(profileForm, {'attr': {'novalidate': 'novalidate'}}) }}
+
+						<div class="mb-3">
+							{{ form_label(profileForm.nom) }}
+							{{ form_widget(profileForm.nom, {'attr': {'class': 'form-control'}})
+														                        }}
+							{{ form_errors(profileForm.nom) }}
+						</div>
+
+						<div class="mb-3">
+							{{ form_label(profileForm.email) }}
+							{{ form_widget(profileForm.email, {'attr': {'class': 'form-control'}})
+														                        }}
+							{{ form_errors(profileForm.email) }}
+							<small class="form-text text-muted">
+								Si vous modifiez votre adresse e-mail, vous devrez la vérifier à nouveau.
+							</small>
+						</div>
+
+						<div class="mb-3">
+							{{ form_label(profileForm.currentPassword) }}
+							{{ form_widget(profileForm.currentPassword, {'attr': {'class': 'form-control'}}) }}
+							{{ form_errors(profileForm.currentPassword) }}
+						</div>
+						<div class="mb-3">
+							{{ form_label(profileForm.plainPassword) }}
+							{{ form_widget(profileForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+							{{ form_errors(profileForm.plainPassword) }}
+						</div>
+						<div class="mb-3">
+							{{ form_label(profileForm.plainPasswordConfirm) }}
+							{{ form_widget(profileForm.plainPasswordConfirm, {'attr': {'class': 'form-control'}}) }}
+							{{ form_errors(profileForm.plainPasswordConfirm) }}
+						</div>
+
+						<div class="d-grid">
+							{{ form_widget(profileForm.submit, {'attr': {'class': 'btn btn-primary btn-lg rounded'}})
+														                        }}
+						</div>
+
+						{{ form_end(profileForm) }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

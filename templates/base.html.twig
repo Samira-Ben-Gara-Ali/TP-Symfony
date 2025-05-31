@@ -724,6 +724,15 @@
 				.navbar-brand:hover i {
 					animation-duration: 1s;
 				}
+
+				.dropdown-menu .dropdown-item {
+					color: #212529 !important;
+				}
+				.dropdown-menu .dropdown-item:hover,
+				.dropdown-menu .dropdown-item:focus {
+					color: #fff !important;
+					background-color: #667eea !important;
+				}
 		</style>
 	</head>
 
@@ -787,6 +796,44 @@
 						{% endif %}
 
 						{% if app.user %}
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+									<i class="bi bi-person-circle"></i>
+									{{ app.user.nom|split(' ')[0] }}
+								</a>
+								<ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="navbarDropdownUser">
+									<li>
+										<a class="dropdown-item" href="{{ path('app_user_profile') }}">
+											<i class="bi bi-person-fill me-2"></i>Mon Profil
+										</a>
+									</li>
+									{% if is_granted('ROLE_ADMIN') %}
+										<li><hr class="dropdown-divider"></li>
+										<li class="dropdown-header">Administration</li>
+										<li>
+											<a class="dropdown-item" href="{{ path('admin_produits') }}">
+												<i class="bi bi-book-fill me-2"></i>Gérer Produits
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path('admin_categories') }}">
+												<i class="bi bi-tags-fill me-2"></i>Gérer Catégories
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="{{ path('admin_commandes') }}">
+												<i class="bi bi-receipt-cutoff me-2"></i>Gérer Commandes
+											</a>
+										</li>
+									{% endif %}
+									<li><hr class="dropdown-divider"></li>
+									<li>
+										<a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+											<i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+										</a>
+									</li>
+								</ul>
+							</li>
 							<li class="nav-item">
 								<a class="nav-link text-white position-relative" href="{{ path('panier_index') }}">
 									<i class="bi bi-cart3"></i>
@@ -797,29 +844,6 @@
 										</span>
 									{% endif %}
 								</a>
-							</li>
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-									<i class="bi bi-person-circle"></i>
-									{{ app.user.email }}
-								</a>
-								<ul class="dropdown-menu">
-									<li>
-										<a class="dropdown-item" href="{{ path('commande_liste') }}">
-											<i class="bi bi-list-ul"></i>
-											Mes commandes
-										</a>
-									</li>
-									<li>
-										<hr class="dropdown-divider">
-									</li>
-									<li>
-										<a class="dropdown-item" href="{{ path('app_logout') }}">
-											<i class="bi bi-box-arrow-right"></i>
-											Déconnexion
-										</a>
-									</li>
-								</ul>
 							</li>
 						{% else %}
 							<li class="nav-item">
@@ -1093,5 +1117,7 @@
 				color: #ffffff !important;
 			}
 		</style>
+
+		{% block javascripts %}{% endblock %}
 	</body>
 </html>

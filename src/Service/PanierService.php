@@ -8,16 +8,17 @@ use App\Entity\Panier;
 use App\Repository\ArticleDuPanierRepository;
 use App\Repository\PanierRepository;
 use App\Repository\ProduitRepository;
-use App\Repository\UtilisateurRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use App\Entity\User;
 
 class PanierService
 {
     private $panierRepository;
     private $articleDuPanierRepository;
     private $produitRepository;
-    private $utilisateurRepository;
+    private $userRepository;
     private $entityManager;
     private $security;
 
@@ -27,33 +28,28 @@ class PanierService
         ProduitRepository         $produitRepository,
         EntityManagerInterface    $entityManager,
         Security                  $security,
-        utilisateurRepository      $utilisateurRepository
-    )
-    {
+        UserRepository            $userRepository
+    ) {
         $this->panierRepository = $panierRepository;
         $this->articleDuPanierRepository = $articleDuPanierRepository;
         $this->produitRepository = $produitRepository;
         $this->entityManager = $entityManager;
         $this->security = $security;
-        $this->utilisateurRepository = $utilisateurRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function getPanier(): Panier
     {
-
-        $utilisateur = $this->security->getUser();
-
-
-
-        $panier = $utilisateur ? $this->panierRepository->findOneBy(['utilisateur' => $utilisateur]) : null;
-
-        if (!$panier) {
-            $panier = new Panier();
-            if ($utilisateur) {
-                $panier->setUtilisateur($utilisateur);
+        $user = $this->security->getUser();
+        $panier = null;
+        if ($user instanceof User) {
+            $panier = $this->panierRepository->findOneBy(['utilisateur' => $user]);
+            if (!$panier) {
+                $panier = new Panier();
+                $panier->setUtilisateur($user);
+                $this->entityManager->persist($panier);
+                $this->entityManager->flush();
             }
-            $this->entityManager->persist($panier);
-            $this->entityManager->flush();
         }
         return $panier;
     }
@@ -68,8 +64,10 @@ class PanierService
         }
         $panier = $this->getPanier();
         $article = $this->articleDuPanierRepository->findOneBy(
-            ['produit' => $idProduit,
-                'panier' => $panier]
+            [
+                'produit' => $idProduit,
+                'panier' => $panier
+            ]
         );
 
         if ($article) {
@@ -77,12 +75,11 @@ class PanierService
         } else {
             $article = new ArticleDuPanier();
             $article->setPanier($panier)
-                    ->setProduit($produit)
-                    ->setQuantite($quantite);
+                ->setProduit($produit)
+                ->setQuantite($quantite);
             $this->entityManager->persist($article);
         }
         $this->entityManager->flush();
-
     }
 
     public function supprimer(int $idProduit): void
@@ -97,7 +94,6 @@ class PanierService
             $this->entityManager->remove($article);
             $this->entityManager->flush();
         }
-
     }
 
     public function mettreAJour(int $idProduit, int $quantite): void
@@ -122,18 +118,24 @@ class PanierService
     {
         $panier = $this->getPanier();
         $total = 0;
-        foreach ($panier->getArticles() as $article) {
-            $total += $article->getQuantite() * $article->getProduit()->getPrix();
+        if ($panier) {
+            $articles = $panier->getArticles();
+            if ($articles) {
+                foreach ($articles as $article) {
+                    if ($article && $article->getProduit()) {
+                        $total += $article->getQuantite() * $article->getProduit()->getPrix();
+                    }
+                }
+            }
         }
         return $total;
     }
-    public function vider(){
+    public function vider()
+    {
         $panier = $this->getPanier();
         foreach ($panier->getArticles() as $article) {
             $this->entityManager->remove($article);
         }
         $this->entityManager->flush();
-}
-
-
+    }
 }

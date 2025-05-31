@@ -24,18 +24,18 @@ class StripeService
         return $this->publicKey;
     }
 
-    /**
-     * Crée un Payment Intent pour une commande
-     */
+    
+ 
+     
     public function createPaymentIntent(Commande $commande): array
     {
         try {
-            // Convertir le montant en centimes (Stripe utilise les centimes)
+            // Convertir le montant en centime
             $amount = (int) (floatval($commande->getTotal()) * 100);
 
             $paymentIntent = $this->stripe->paymentIntents->create([
                 'amount' => $amount,
-                'currency' => 'eur', // Ou 'tnd' si Stripe supporte les dinars tunisiens
+                'currency' => 'eur', 
                 'payment_method_types' => ['card'],
                 'metadata' => [
                     'commande_id' => $commande->getId(),
@@ -62,9 +62,7 @@ class StripeService
         }
     }
 
-    /**
-     * Récupère un Payment Intent
-     */
+  
     public function retrievePaymentIntent(string $paymentIntentId): array
     {
         try {
@@ -82,9 +80,7 @@ class StripeService
         }
     }
 
-    /**
-     * Confirme le statut d'un paiement
-     */
+  
     public function confirmPaymentStatus(string $paymentIntentId): string
     {
         try {
@@ -101,9 +97,7 @@ class StripeService
         }
     }
 
-    /**
-     * Crée un remboursement
-     */
+  
     public function createRefund(string $paymentIntentId, ?int $amount = null): array
     {
         try {

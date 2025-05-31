@@ -17,15 +17,14 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use App\Service\MailerService;
 
 class RegistrationController extends AbstractController
 {
-    public function __construct(private EmailVerifier $emailVerifier)
-    {
-    }
+    public function __construct(private EmailVerifier $emailVerifier) {}
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager, MailerService $mailerService): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationForm::class, $user);
@@ -41,17 +40,25 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            // Send welcome email
+            try {
+                $mailerService->sendWelcome($user);
+                $this->addFlash('success', 'Compte créé avec succès ! Un email de bienvenue a été envoyé.');
+            } catch (\Exception $e) {
+                $this->addFlash('warning', 'Compte créé avec succès ! Cependant, l\'email de bienvenue n\'a pas pu être envoyé.');
+            }
+
+            // Send email verification link
+            $this->emailVerifier->sendEmailConfirmation(
+                'app_verify_email',
+                $user,
                 (new TemplatedEmail())
-                    //a modifier par wissem
-                    ->from(new Address('yassinetrabelsi987456123@gmail.com', 'Team'))
+                    ->from(new Address($_ENV['MAILER_FROM'] ?? 'drissia043@gmail.com', 'BookSaw'))
                     ->to((string) $user->getEmail())
-                    ->subject('Please Confirm your Email')
+                    ->subject('Veuillez confirmer votre adresse e-mail')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-
-
+            $this->addFlash('info', 'Veuillez vérifier votre boîte mail et cliquer sur le lien de confirmation pour activer votre compte.');
 
             return $this->redirectToRoute('app_login');
         }
@@ -66,7 +73,7 @@ class RegistrationController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        // validate email confirmation link, sets User::isVerified=true and persists
+        // validate email 
         try {
             /** @var User $user */
             $user = $this->getUser();
@@ -77,7 +84,6 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified.');
 
         return $this->redirectToRoute('produit_liste');

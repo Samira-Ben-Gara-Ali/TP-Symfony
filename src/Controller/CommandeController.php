@@ -7,6 +7,7 @@ use App\Entity\Commande;
 use App\Repository\UserRepository;
 use App\Service\PanierService;
 use App\Service\StripeService;
+use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -22,22 +23,25 @@ final class CommandeController extends AbstractController
 {
     private $panierService;
     private $entityManager;
-    private $utilisateurRepository;
+    private $userRepository;
     private $security;
     private $stripeService;
+    private $mailerService;
 
     public function __construct(
         PanierService $panierService,
         EntityManagerInterface $entityManager,
-        UserRepository $utilisateurRepository,
+        UserRepository $userRepository,
         Security $security,
-        StripeService $stripeService
+        StripeService $stripeService,
+        MailerService $mailerService
     ) {
         $this->panierService = $panierService;
         $this->entityManager = $entityManager;
-        $this->utilisateurRepository = $utilisateurRepository;
+        $this->userRepository = $userRepository;
         $this->security = $security;
         $this->stripeService = $stripeService;
+        $this->mailerService = $mailerService;
     }
 
     #[Route('/liste', name: 'commande_liste')]
@@ -60,8 +64,11 @@ final class CommandeController extends AbstractController
         $panier = $this->panierService->getPanier();
         $total = $this->panierService->getTotal();
 
+        $user = $this->security->getUser();
+
+
         if ($total <= 0) {
-            $this->addFlash('danger', 'Votre panier est vide');
+            $this->addFlash('danger', 'Votre panier est vide.');
             return $this->redirectToRoute('panier_index');
         }
 
@@ -90,7 +97,7 @@ final class CommandeController extends AbstractController
     }
 
     #[Route('/create-payment-intent', name: 'commande_create_payment_intent', methods: ['POST'])]
-    public function createPaymentIntent(Request $request): JsonResponse
+    public function createPaymentIntent(Request $request, MailerService $mailerService): JsonResponse
     {
         $panier = $this->panierService->getPanier();
         $total = $this->panierService->getTotal();
@@ -174,6 +181,9 @@ final class CommandeController extends AbstractController
 
             $this->entityManager->flush();
 
+            // Send facture email here, after payment is confirmed
+            $this->mailerService->sendFacture($commande);
+
             return new JsonResponse([
                 'success' => true,
                 'redirect_url' => $this->generateUrl('commande_success', ['id' => $commande->getId()])
@@ -210,7 +220,7 @@ final class CommandeController extends AbstractController
 
     // Maintenir l'ancienne méthode pour compatibilité (sans paiement)
     #[Route('/finaliser', name: 'commande_finaliser')]
-    public function finaliser(): Response
+    public function finaliser(MailerService $mailerService): Response
     {
         $panier = $this->panierService->getPanier();
         $total = $this->panierService->getTotal();
@@ -257,6 +267,9 @@ final class CommandeController extends AbstractController
         }
         $this->entityManager->persist($commande);
         $this->entityManager->flush();
+
+        // Send facture email
+        $mailerService->sendFacture($commande);
 
         $this->panierService->vider();
         $this->addFlash('success', 'Votre commande a été finalisé avec succes! Numéro de commande : #'
